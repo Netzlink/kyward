@@ -1,0 +1,2 @@
+[global.databases]
+dev = { url = "../dev.sqlite" }
