@@ -22,6 +22,13 @@ fn index() -> &'static str {
 fn kyward() -> _ {
     dotenv().ok();
     rocket::build()
-        .mount("/", routes![index, door::list_doors])
+        .mount("/", routes![index])
+        .mount("/api", routes![
+            door::list_doors,
+            door::get_door,
+            door::add_door,
+            door::update_door,
+            door::delete_door,
+        ])
         .attach(database::DbConn::fairing())
 }
