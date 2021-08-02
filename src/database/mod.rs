@@ -1,4 +1,4 @@
 use rocket_sync_db_pools::database;
 
-#[database("dev")]
+#[database("kyward")]
 pub struct DbConn(diesel::SqliteConnection);

@@ -1,2 +1,2 @@
 [global.databases]
-dev = { url = "../dev.sqlite" }
+kyward = { url = "../dev.sqlite" }

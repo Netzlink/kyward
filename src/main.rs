@@ -2,30 +2,22 @@
 extern crate rocket;
 #[macro_use]
 extern crate diesel;
-use dotenv::dotenv;
+extern crate dotenv;
 
-// https://blog.logrocket.com/create-a-backend-api-with-rust-and-postgres/
 mod models;
 mod handler;
-use handler::door;
-use handler::company;
-use handler::group;
-use handler::token;
-use handler::person;
 mod cors;
-pub mod schema;
+mod schema;
 mod database;
-// Later yew endpoint
-#[get("/")]
-fn index() -> &'static str {
-    "Hello from kyward!"
-}
 
+use handler::{door, group, token, person, company, ui};
+
+// https://blog.logrocket.com/create-a-backend-api-with-rust-and-postgres/
 #[launch]
 fn kyward() -> _ {
-    dotenv().ok();
+    dotenv::dotenv().ok();
     rocket::build()
-        .mount("/", routes![index])
+        .mount("/", routes![ui::index])
         .mount("/api", routes![
             door::list,
             door::get,
