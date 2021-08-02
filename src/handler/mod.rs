@@ -1,6 +1,6 @@
-pub mod door;
 pub mod company;
+pub mod door;
 pub mod group;
-pub mod token;
 pub mod person;
+pub mod token;
 pub mod ui;
