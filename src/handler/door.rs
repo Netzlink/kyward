@@ -5,7 +5,7 @@ use super::super::schema::doors::dsl::*;
 use super::super::diesel::prelude::*;
 
 #[get("/door")]
-pub async fn list_doors(db: DbConn) -> Json<Vec<Door>> {
+pub async fn list(db: DbConn) -> Json<Vec<Door>> {
     Json(
       db.run( |c| 
         doors
@@ -16,7 +16,7 @@ pub async fn list_doors(db: DbConn) -> Json<Vec<Door>> {
 }
 
 #[get("/door/<identifier>")]
-pub async fn get_door(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
+pub async fn get(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
     Json(
       db.run( move |c| 
         doors.filter(
@@ -29,7 +29,7 @@ pub async fn get_door(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
 }
 
 #[post("/door", format = "json", data = "<data>")]
-pub async fn add_door(db: DbConn, data: Json<Door>) -> Json<i32> {
+pub async fn add(db: DbConn, data: Json<Door>) -> Json<i32> {
     let new_door: Door = data.into_inner();
     let i = new_door.id;
     db.run(move |c| 
@@ -40,23 +40,25 @@ pub async fn add_door(db: DbConn, data: Json<Door>) -> Json<i32> {
     Json(i)
 }
 
-#[put("/door/<identifier>", format = "json", data = "<data>")]
-pub async fn update_door(db: DbConn, identifier: i32, data: Json<Door>) -> Json<i32> {
+#[put("/door", format = "json", data = "<data>")]
+pub async fn update(db: DbConn, data: Json<Door>) -> Json<i32> {
     let new_door: Door = data.into_inner();
     let i = new_door.id;
     db.run(move |c| 
-        diesel::update(doors.find(identifier))
-          .set(description.eq(new_door.description))
-          .execute(c).unwrap()
+        diesel::update(doors)
+        .set(new_door)
+        .execute(c)
+        .unwrap()
     ).await;
     Json(i)
 }
 
 #[delete("/door/<identifier>")]
-pub async fn delete_door(db: DbConn, identifier: i32) -> Json<i32> {
+pub async fn delete(db: DbConn, identifier: i32) -> Json<i32> {
     db.run(move |c| 
         diesel::delete(doors.find(identifier))
-          .execute(c).unwrap()
+          .execute(c)
+          .unwrap()
     ).await;
     Json(identifier)
 }
