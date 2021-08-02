@@ -1,7 +1,7 @@
 use rocket::serde::{Deserialize, Serialize};
 use super::super::schema::doors;
 
-#[derive(Debug, Clone, Deserialize, Serialize, Queryable, Insertable)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Queryable, Insertable, Identifiable, AsChangeset, Associations)]
 #[serde(crate = "rocket::serde")]
 #[table_name="doors"]
 pub struct Door {

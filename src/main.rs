@@ -7,8 +7,8 @@ use dotenv::dotenv;
 // https://blog.logrocket.com/create-a-backend-api-with-rust-and-postgres/
 mod models;
 mod handler;
-pub mod schema;
 use handler::door;
+pub mod schema;
 mod database;
 // Later yew endpoint
 #[get("/")]
