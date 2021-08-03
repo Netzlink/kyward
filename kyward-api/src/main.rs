@@ -1,10 +1,12 @@
-#![feature(decl_macro)]
+#![feature(decl_macro, proc_macro_hygiene)]
 
 #[macro_use]
 extern crate rocket;
 #[macro_use]
 extern crate diesel;
 extern crate dotenv;
+#[macro_use]
+extern crate rust_embed;
 
 mod cors;
 mod database;
@@ -20,7 +22,7 @@ use handler::{company, door, group, person, token, ui};
 fn kyward() -> _ {
     dotenv::dotenv().ok();
     rocket::build()
-        .mount("/", routes![ui::index])
+        .mount("/", routes![ui::index, ui::static_files])
         .mount(
             "/api",
             routes![

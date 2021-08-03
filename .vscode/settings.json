@@ -2,6 +2,7 @@
     "cSpell.words": [
         "connection",
         "dotenv",
-        "sqlite"
+        "sqlite",
+        "wasm"
     ]
 }
