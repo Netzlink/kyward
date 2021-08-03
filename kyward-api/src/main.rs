@@ -22,7 +22,7 @@ use handler::{company, door, group, person, token, ui};
 fn kyward() -> _ {
     dotenv::dotenv().ok();
     rocket::build()
-        .mount("/", routes![ui::index, ui::static_files])
+        .mount("/", routes![ui::index, ui::files])
         .mount(
             "/api",
             routes![
