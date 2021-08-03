@@ -1,6 +1,7 @@
 use super::super::database::DbConn;
 use super::super::diesel::prelude::*;
 use super::super::models::door::Door;
+use super::super::models::group::Group;
 use super::super::schema::doors::dsl::*;
 use rocket::serde::json::Json;
 
@@ -24,6 +25,21 @@ pub async fn get(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
     .await,
   )
 }
+
+#[get("/group/<identifier>/doors")]
+pub async fn get_doors(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
+  //TODO
+  let doors_found : Vec<Door> = vec![Door{
+    id: 0,
+    name: "".to_string(),
+    compartment: "".to_string(),
+    level: "".to_string(),
+    building: "".to_string(),
+    description: "".to_string()
+  }];
+  Json(doors_found)
+}
+
 
 #[post("/door", format = "json", data = "<data>")]
 pub async fn add(db: DbConn, data: Json<Door>) -> Json<i32> {

@@ -1,3 +1,5 @@
+#![feature(decl_macro)]
+
 #[macro_use]
 extern crate rocket;
 #[macro_use]
@@ -13,6 +15,7 @@ mod schema;
 use handler::{company, door, group, person, token, ui};
 
 // https://blog.logrocket.com/create-a-backend-api-with-rust-and-postgres/
+// TODO: https://docs.rs/rocket_oauth2/0.4.1/rocket_oauth2/struct.OAuth2.html
 #[launch]
 fn kyward() -> _ {
     dotenv::dotenv().ok();

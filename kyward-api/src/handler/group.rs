@@ -1,6 +1,7 @@
 use super::super::database::DbConn;
 use super::super::diesel::prelude::*;
 use super::super::models::group::Group;
+use super::super::models::door::Door;
 use super::super::schema::groups::dsl::*;
 use rocket::serde::json::Json;
 
