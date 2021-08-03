@@ -1,4 +1,7 @@
 use yew::prelude::*;
+use ybc::NavbarFixed::Top;
+use ybc::TileCtx::{Ancestor, Child, Parent};
+use ybc::TileSize::Four;
 
 enum Msg {
     AddOne,
@@ -42,10 +45,33 @@ impl Component for Model {
 
     fn view(&self) -> Html {
         html! {
-            <div>
-                <button onclick=self.link.callback(|_| Msg::AddOne)>{ "+1" }</button>
-                <p>{ self.value }</p>
-            </div>
+          <>
+            <ybc::Navbar
+              transparent=false
+              padded=true 
+              spaced=true
+              navbrand=html! {
+                <a href={"/"}>
+                  <ybc::Title>{"Kyward"}</ybc::Title>
+                </a>
+              }
+              navstart=html! {
+                <p>{"test"}</p>
+              } 
+            />
+            <ybc::Container fluid=true>
+              <ybc::Tile ctx=Ancestor>
+                <ybc::Tile ctx=Parent vertical=true size=Four>
+                  <ybc::Tile ctx=Child classes=classes!("box")>
+                    <p>{"Lorem ipsum dolor sit amet ..."}</p>
+                    <ybc::Button onclick=self.link.callback(|_| Msg::AddOne)>{ "+1" }</ybc::Button>
+                    <p>{ self.value }</p>
+                  </ybc::Tile>
+                  /* .. snip .. more tiles here .. */
+                </ybc::Tile>
+              </ybc::Tile>
+            </ybc::Container>
+          </>
         }
     }
 }

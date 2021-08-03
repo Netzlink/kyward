@@ -3,7 +3,13 @@ name = "kyward"
 version = "0.1.0"
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[package.metadata.raze]
+workspace_path = "//kyward-api"
+package_aliases_dir = "."
+targets = [
+    "x86_64-unknown-linux-gnu",
+]
+genmode = "Remote"
 
 [dependencies]
 chrono = { version = "0.4.11", features = ["serde"] }
