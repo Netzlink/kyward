@@ -1,17 +1,23 @@
 use rocket::http::ContentType;
 use rocket::response::status::NotFound;
 
+const UI_ENTRYPOINT: &str = "index.html";
+
 #[derive(RustEmbed)]
 #[folder = "../kyward-ui/dist"]
 struct Asset;
 
 #[get("/")]
 pub fn index() -> Result<(ContentType, Vec<u8>), NotFound<String>> {
-    files("index.html")
+    files(UI_ENTRYPOINT)
 }
 
 #[get("/<id>")]
 pub fn files(id: &str) -> Result<(ContentType, Vec<u8>), NotFound<String>> {
+    let id = match id.contains('.') {
+        true => id,
+        false => UI_ENTRYPOINT,
+    };
     let file = (match Asset::get(id) {
         Some(f) => Ok(f),
         None => Err(NotFound(format!(

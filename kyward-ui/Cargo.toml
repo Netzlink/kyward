@@ -13,4 +13,5 @@ genmode = "Remote"
 
 [dependencies]
 yew = "0.18"
+yew-router = "0.15.0"
 ybc = "0.2"
