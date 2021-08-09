@@ -49,7 +49,7 @@ impl Component for KywardRouter {
                 match switch {
                     AppRoute::Index => html!{<home::Home/>},
                     AppRoute::Home => html!{<home::Home/>},
-                    AppRoute::Doors => html!{<doors::Doors/>}
+                    AppRoute::Doors => html!{<doors::Doors token="" />}
                 }
             })
         />

@@ -27,7 +27,7 @@ pub async fn get(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
 }
 
 #[get("/group/<identifier>/doors")]
-pub async fn get_doors(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
+pub async fn get_doors_by_group(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
   //TODO
   let doors_found : Vec<Door> = vec![Door{
     id: 0,

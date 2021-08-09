@@ -1,3 +1,4 @@
+mod models;
 mod app;
 mod router;
 mod pages;

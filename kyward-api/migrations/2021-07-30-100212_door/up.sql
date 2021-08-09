@@ -8,7 +8,6 @@ create table `doors` (
     `description` text not null,
     primary key (`id`)
 );
-
 create table `groups` (
     `id` integer not null,
     `name` char(16) not null,
@@ -17,22 +16,20 @@ create table `groups` (
     primary key (`id`, `door_id`),
     foreign key (`door_id`) references `doors` (`id`)
 );
-
 create table `companies` (
     `id` integer not null,
     `name` char(32) not null,
     `description` text not null,
     primary key (`id`)
 );
-
 create table `tokens` (
     `id` integer not null,
     `value` char(8) not null,
     `reverse` char(8) not null,
     `description` text not null,
+    `ema` text mot null,
     primary key (`id`)
 );
-
 create table `persons` (
     `id` integer not null,
     `first_name` char(32) not null,

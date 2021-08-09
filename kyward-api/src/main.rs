@@ -7,6 +7,8 @@ extern crate diesel;
 extern crate dotenv;
 #[macro_use]
 extern crate rust_embed;
+#[macro_use]
+extern crate clap;
 
 mod cors;
 mod database;
@@ -14,7 +16,7 @@ mod handler;
 mod models;
 mod schema;
 
-use handler::{company, door, group, person, token, ui};
+use handler::{company, door, group, person, token, ui, version};
 
 // https://blog.logrocket.com/create-a-backend-api-with-rust-and-postgres/
 // TODO: https://docs.rs/rocket_oauth2/0.4.1/rocket_oauth2/struct.OAuth2.html
@@ -22,20 +24,17 @@ use handler::{company, door, group, person, token, ui};
 fn kyward() -> _ {
     dotenv::dotenv().ok();
     rocket::build()
-        .mount("/", routes![ui::index, ui::files])
+        .attach(database::DbConn::fairing())
+        .attach(cors::CORS)
+        .mount("/", routes![ui::index, ui::files, version::version])
         .mount(
-            "/api",
+            "/api/v1alpha1",
             routes![
                 door::list,
                 door::get,
                 door::add,
                 door::update,
                 door::delete,
-                company::list,
-                company::get,
-                company::add,
-                company::update,
-                company::delete,
                 group::list,
                 group::get,
                 group::add,
@@ -51,8 +50,11 @@ fn kyward() -> _ {
                 person::add,
                 person::update,
                 person::delete,
+                company::list,
+                company::get,
+                company::add,
+                company::update,
+                company::delete,
             ],
         )
-        .attach(database::DbConn::fairing())
-        .attach(cors::CORS)
 }

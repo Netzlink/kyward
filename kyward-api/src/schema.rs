@@ -44,9 +44,16 @@ table! {
         value -> Text,
         reverse -> Text,
         description -> Text,
+        ema -> Text,
     }
 }
 
 joinable!(groups -> doors (door_id));
 
-allow_tables_to_appear_in_same_query!(companies, doors, groups, persons, tokens,);
+allow_tables_to_appear_in_same_query!(
+    companies,
+    doors,
+    groups,
+    persons,
+    tokens,
+);
