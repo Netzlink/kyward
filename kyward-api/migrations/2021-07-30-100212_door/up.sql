@@ -27,13 +27,14 @@ create table `tokens` (
     `value` char(8) not null,
     `reverse` char(8) not null,
     `description` text not null,
-    `ema` text mot null,
     primary key (`id`)
 );
 create table `persons` (
     `id` integer not null,
     `first_name` char(32) not null,
     `last_name` char(32) not null,
+    `ema` text not null,
+    `enabled` boolean not null default true,
     `company_id` integer not null,
     `token_id` integer not null,
     `group_id` integer not null,

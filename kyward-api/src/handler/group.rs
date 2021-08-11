@@ -1,7 +1,7 @@
 use super::super::database::DbConn;
 use super::super::diesel::prelude::*;
-use super::super::models::group::Group;
 use super::super::models::door::Door;
+use super::super::models::group::Group;
 use super::super::schema::groups::dsl::*;
 use rocket::serde::json::Json;
 
@@ -44,8 +44,13 @@ pub async fn add(db: DbConn, data: Json<Group>) -> Json<i32> {
 pub async fn update(db: DbConn, data: Json<Group>) -> Json<i32> {
   let new_group: Group = data.into_inner();
   let i = new_group.id;
-  db.run(move |c| diesel::update(groups).set(new_group).execute(c).unwrap())
-    .await;
+  db.run(move |c| {
+    diesel::update(groups.filter(id.eq(i)))
+      .set(new_group)
+      .execute(c)
+      .unwrap()
+  })
+  .await;
   Json(i)
 }
 

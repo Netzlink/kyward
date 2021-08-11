@@ -25,6 +25,8 @@ pub struct Person {
     pub id: i32,
     pub first_name: String,
     pub last_name: String,
+    pub ema: String,
+    pub enabled: bool,
     pub company_id: i32,
     pub token_id: i32,
     pub group_id: i32,

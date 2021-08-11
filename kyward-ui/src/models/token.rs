@@ -12,5 +12,4 @@ pub struct Token {
     pub value: String,
     pub reverse: String,
     pub description: String,
-    pub ema: String,
 }

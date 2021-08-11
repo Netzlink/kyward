@@ -47,8 +47,13 @@ pub async fn add(db: DbConn, data: Json<Company>) -> Json<i32> {
 pub async fn update(db: DbConn, data: Json<Company>) -> Json<i32> {
   let new: Company = data.into_inner();
   let i = new.id;
-  db.run(move |c| diesel::update(companies).set(new).execute(c).unwrap())
-    .await;
+  db.run(move |c| {
+    diesel::update(companies.filter(id.eq(i)))
+      .set(new)
+      .execute(c)
+      .unwrap()
+  })
+  .await;
   Json(i)
 }
 

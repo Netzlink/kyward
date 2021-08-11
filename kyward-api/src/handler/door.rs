@@ -29,17 +29,16 @@ pub async fn get(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
 #[get("/group/<identifier>/doors")]
 pub async fn get_doors_by_group(db: DbConn, identifier: i32) -> Json<Vec<Door>> {
   //TODO
-  let doors_found : Vec<Door> = vec![Door{
+  let doors_found: Vec<Door> = vec![Door {
     id: 0,
     name: "".to_string(),
     compartment: "".to_string(),
     level: "".to_string(),
     building: "".to_string(),
-    description: "".to_string()
+    description: "".to_string(),
   }];
   Json(doors_found)
 }
-
 
 #[post("/door", format = "json", data = "<data>")]
 pub async fn add(db: DbConn, data: Json<Door>) -> Json<i32> {
@@ -59,8 +58,13 @@ pub async fn add(db: DbConn, data: Json<Door>) -> Json<i32> {
 pub async fn update(db: DbConn, data: Json<Door>) -> Json<i32> {
   let new_door: Door = data.into_inner();
   let i = new_door.id;
-  db.run(move |c| diesel::update(doors).set(new_door).execute(c).unwrap())
-    .await;
+  db.run(move |c| {
+    diesel::update(doors.filter(id.eq(i)))
+      .set(new_door)
+      .execute(c)
+      .unwrap()
+  })
+  .await;
   Json(i)
 }
 

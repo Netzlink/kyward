@@ -40,7 +40,7 @@ impl Component for App {
             <a href={"/home"}>
               <ybc::Title>
                 <ybc::Icon>
-                  <i class=classes!{"fas", "fa-home"}></i>
+                  <i class=classes!{"fa", "fa-key"}></i>
                 </ybc::Icon>
                 {"Kyward"}
               </ybc::Title>
@@ -53,6 +53,14 @@ impl Component for App {
           }
         />
         <KywardRouter/>
+        <ybc::Footer>
+          <p>
+            {"Build by "}
+            <a href={"https://github.com/nk-designz"}>{"nka"}</a>
+            {" for "}
+            <a href={"https://netzlink.com"} >{"Netzlink"}</a>
+          </p>
+        </ybc::Footer>
       </>
     }
   }

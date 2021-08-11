@@ -31,6 +31,8 @@ table! {
         id -> Integer,
         first_name -> Text,
         last_name -> Text,
+        ema -> Text,
+        enabled -> Bool,
         company_id -> Integer,
         token_id -> Integer,
         group_id -> Integer,
@@ -44,7 +46,6 @@ table! {
         value -> Text,
         reverse -> Text,
         description -> Text,
-        ema -> Text,
     }
 }
 
