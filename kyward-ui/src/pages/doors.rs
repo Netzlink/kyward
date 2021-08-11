@@ -29,19 +29,18 @@ impl Component for Doors {
   type Properties = Properties;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    fn create_and_callback(doors: Doors) -> Doors {
+    return |doors: Doors| -> Doors {
       doors
         .link
         .callback(|_: Msg| Msg::Refresh)
         .emit(Msg::Refresh);
       doors
-    }
-    create_and_callback(Self {
+    }(Self {
       link,
       fetching: None,
       doors: vec![],
       props: props,
-    })
+    });
   }
 
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -110,7 +109,7 @@ impl Component for Doors {
                       self.doors.iter().map( |door|
                         html!{
                           <tr>
-                            <th>{ &door.name }</th>
+                            <th><a href={format!("/door/{0}", &door.id)}>{ &door.name }</a></th>
                             <th>{ &door.compartment }</th>
                             <th>{ &door.level }</th>
                             <th>{ &door.building }</th>
@@ -120,7 +119,6 @@ impl Component for Doors {
                     }
                     </tbody>
                   </ybc::Table>
-                  <a href={ "/" }>{"Self"}</a>
                 </ybc::Tile>
               </ybc::Tile>
             </ybc::Tile>

@@ -1,5 +1,6 @@
 use rocket::http::ContentType;
 use rocket::response::status::NotFound;
+use std::path::{PathBuf, Path};
 
 const UI_ENTRYPOINT: &str = "index.html";
 
@@ -9,14 +10,17 @@ struct Asset;
 
 #[get("/")]
 pub fn index() -> Result<(ContentType, Vec<u8>), NotFound<String>> {
-    files(UI_ENTRYPOINT)
+    files(Path::new(UI_ENTRYPOINT).to_path_buf())
 }
 
-#[get("/<id>")]
-pub fn files(id: &str) -> Result<(ContentType, Vec<u8>), NotFound<String>> {
-    let id = match id.contains('.') {
-        true => id,
-        false => UI_ENTRYPOINT,
+#[get("/<path..>")]
+pub fn files(path: PathBuf) -> Result<(ContentType, Vec<u8>), NotFound<String>> {
+    let id = match path.to_str() {
+        Some(id) => match id.contains('.') {
+            true => id,
+            false => UI_ENTRYPOINT,
+        },
+        None => UI_ENTRYPOINT,
     };
     let file = (match Asset::get(id) {
         Some(f) => Ok(f),
