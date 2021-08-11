@@ -1,4 +1,4 @@
-use super::super::schema::persons;
+use super::super::super::schema::persons;
 use super::company::Company;
 use super::group::Group;
 use super::token::Token;

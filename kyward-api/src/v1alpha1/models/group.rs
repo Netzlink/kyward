@@ -1,4 +1,4 @@
-use super::super::schema::groups;
+use super::super::super::schema::groups;
 use super::door::Door;
 use rocket::serde::{Deserialize, Serialize};
 

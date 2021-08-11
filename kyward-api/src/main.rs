@@ -12,11 +12,10 @@ extern crate clap;
 
 mod cors;
 mod database;
-mod handler;
-mod models;
 mod schema;
+mod v1alpha1;
 
-use handler::{company, door, group, person, token, ui, version};
+use v1alpha1:: handler::{company, door, group, person, token, ui, version};
 
 // https://blog.logrocket.com/create-a-backend-api-with-rust-and-postgres/
 // TODO: https://docs.rs/rocket_oauth2/0.4.1/rocket_oauth2/struct.OAuth2.html
@@ -40,6 +39,7 @@ fn kyward() -> _ {
                 group::add,
                 group::update,
                 group::delete,
+                group::get_doors_by_group,
                 token::list,
                 token::get,
                 token::add,

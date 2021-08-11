@@ -1,4 +1,4 @@
-use super::super::schema::companies;
+use super::super::super::schema::doors;
 use rocket::serde::{Deserialize, Serialize};
 
 #[derive(
@@ -14,9 +14,12 @@ use rocket::serde::{Deserialize, Serialize};
     Associations,
 )]
 #[serde(crate = "rocket::serde")]
-#[table_name = "companies"]
-pub struct Company {
+#[table_name = "doors"]
+pub struct Door {
     pub id: i32,
     pub name: String,
+    pub compartment: String,
+    pub level: String,
+    pub building: String,
     pub description: String,
 }

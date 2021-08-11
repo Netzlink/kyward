@@ -1,4 +1,4 @@
-use super::super::schema::tokens;
+use super::super::super::schema::companies;
 use rocket::serde::{Deserialize, Serialize};
 
 #[derive(
@@ -14,10 +14,9 @@ use rocket::serde::{Deserialize, Serialize};
     Associations,
 )]
 #[serde(crate = "rocket::serde")]
-#[table_name = "tokens"]
-pub struct Token {
+#[table_name = "companies"]
+pub struct Company {
     pub id: i32,
-    pub value: String,
-    pub reverse: String,
+    pub name: String,
     pub description: String,
 }

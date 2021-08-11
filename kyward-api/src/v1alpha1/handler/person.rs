@@ -1,7 +1,7 @@
-use super::super::database::DbConn;
-use super::super::diesel::prelude::*;
+use super::super::super::database::DbConn;
+use super::super::super::diesel::prelude::*;
 use super::super::models::person::Person;
-use super::super::schema::persons::dsl::*;
+use super::super::super::schema::persons::dsl::*;
 use rocket::serde::json::Json;
 
 #[get("/person")]
