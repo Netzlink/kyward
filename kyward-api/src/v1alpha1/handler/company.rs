@@ -1,7 +1,7 @@
 use super::super::super::database::DbConn;
 use super::super::super::diesel::prelude::*;
-use super::super::models::company::Company;
 use super::super::super::schema::companies::dsl::*;
+use super::super::models::company::Company;
 use rocket::serde::json::Json;
 
 #[get("/company")]

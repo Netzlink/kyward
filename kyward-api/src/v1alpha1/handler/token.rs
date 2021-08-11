@@ -1,7 +1,7 @@
 use super::super::super::database::DbConn;
 use super::super::super::diesel::prelude::*;
-use super::super::models::token::Token;
 use super::super::super::schema::tokens::dsl::*;
+use super::super::models::token::Token;
 use rocket::serde::json::Json;
 
 #[get("/token")]

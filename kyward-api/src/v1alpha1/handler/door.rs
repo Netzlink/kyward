@@ -1,7 +1,7 @@
 use super::super::super::database::DbConn;
 use super::super::super::diesel::prelude::*;
-use super::super::models::door::Door;
 use super::super::super::schema::doors::dsl::*;
+use super::super::models::door::Door;
 use rocket::serde::json::Json;
 
 #[get("/door")]
