@@ -35,6 +35,7 @@ pub struct Properties {
 pub struct DoorPage {
   link: ComponentLink<Self>,
   doors: Option<Vec<Door>>,
+  error: Option<anyhow::Error>,
   fetching: Option<FetchTask>,
   props: Properties,
 }
@@ -51,6 +52,7 @@ impl Component for DoorPage {
       link,
       fetching: None,
       doors: None,
+      error: None,
       props: props,
     });
   }
@@ -58,19 +60,33 @@ impl Component for DoorPage {
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
     match msg {
       Msg::GetResp(resp) => {
-        self.doors = match resp {
-          Ok(doors) => Some(doors),
-          _ => None,
+        match resp {
+          Ok(doors) => {
+            self.doors = Some(doors);
+            self.error = None;
+          },
+          Err(err) => {
+            self.doors = None;
+            self.error = Some(err);
+          },
         };
         true
       }
       Msg::Get => {
-        let req = Request::get(format!(
+        let req = match Request::get(format!(
           "http://localhost:8000/api/v1alpha1/door/{0}",
           self.props.id
         ))
-        .body(Nothing)
-        .expect("can make req to jsonplaceholder");
+        .body(Nothing) {
+          Ok(req) => {
+            self.error = None;
+            req
+          },
+          Err(err) => {
+            self.error = Some(anyhow::Error::new(err));
+            return true
+          },
+        };
 
         let cb = self.link.callback(
           |response: Response<Json<Result<Vec<Door>, anyhow::Error>>>| {
@@ -79,47 +95,96 @@ impl Component for DoorPage {
           },
         );
 
-        let task = FetchService::fetch(req, cb).expect("can create task");
-        self.fetching = Some(task);
+        match FetchService::fetch(req, cb) {
+          Ok(task) => {
+            self.fetching = Some(task);
+            self.error = None;
+          },
+          Err(err) => {
+            self.fetching = None;
+            self.error = Some(err);
+          },
+        };
         true
       }
       Msg::Delete => {
-        let req = Request::delete(format!(
+        let req = match Request::delete(format!(
           "http://localhost:8000/api/v1alpha1/door/{0}",
           self.props.id
         ))
-        .body(Nothing)
-        .expect("can make req to jsonplaceholder");
+        .body(Nothing) {
+          Ok(req) => {
+            self.error = None;
+            req
+          },
+          Err(err) => {
+            self.error = Some(anyhow::Error::new(err));
+            return true
+          },
+        };
 
         let cb = self
           .link
           .callback(|_response: Response<Json<Result<i32, anyhow::Error>>>| Msg::Return);
 
-        let task = FetchService::fetch(req, cb).expect("can create task");
-        self.doors = None;
-        self.fetching = Some(task);
+        match FetchService::fetch(req, cb) {
+          Ok(task) => {
+            self.fetching = Some(task);
+            self.doors = None;
+            self.error = None;
+          },
+          Err(err) => {
+            self.fetching = None;
+            self.error = Some(err);
+          },
+        };
         true
       }
       Msg::Update => {
-        let door = &json!(self
-          .doors
-          .clone()
-          .expect("aah")
-          .first()
-          .expect("Ahh")
-          .clone());
+        let door = &json!(
+          match
+           match &self.doors {
+            Some(doors) => doors,
+            None => {
+              self.error = Some(anyhow::Error::msg("No door to update"));
+              return true
+            } 
+           }.clone()
+          .first() {
+            Some(door) => door,
+            None => {
+              self.error = Some(anyhow::Error::msg("No door fetched to update"));
+              return true
+            },
+          }.clone());
 
-        let req = Request::put("http://localhost:8000/api/v1alpha1/door")
+        let req = match Request::put("http://localhost:8000/api/v1alpha1/door")
           .header("Content-Type", "application/json")
-          .body(Json(door))
-          .expect("can make req to jsonplaceholder");
+          .body(Json(door)) {
+            Ok(req) => {
+              self.error = None;
+              req
+            },
+            Err(err) => {
+              self.error = Some(anyhow::Error::new(err));
+              return true
+            },
+          };
 
         let cb = self
           .link
           .callback(|_response: Response<Json<Result<i32, anyhow::Error>>>| Msg::Get);
 
-        let task = FetchService::fetch(req, cb).expect("can create task");
-        self.fetching = Some(task);
+        match FetchService::fetch(req, cb) {
+          Ok(task) => {
+            self.fetching = Some(task);
+            self.error = None;
+          },
+          Err(err) => {
+            self.fetching = None;
+            self.error = Some(err);
+          },
+        };
         true
       }
       Msg::Set(action, value) => {
@@ -267,12 +332,31 @@ impl Component for DoorPage {
                           </>
                         }
                       },
-                      None => html!{
-                        <ybc::Notification classes=classes!("is-danger")>
-                          <ybc::Button classes=classes!("delete")/>
-                          {"An error occurred. Dunno... Maybe check your Connection"}
-                        </ybc::Notification>
-                      }
+                      None => 
+                        match &self.error {
+                          Some(err) => html!{
+                            <>
+                              <ybc::Notification classes=classes!("is-danger")>
+                                <ybc::Title>
+                                  {"Error"}
+                                </ybc::Title>
+                                {"An error occurred. Dunno... Maybe check your Connection"}
+                                <pre>
+                                  { format!("Error: {:#?}", err) }
+                                </pre>
+                              </ybc::Notification>
+                              <a class={"button"} href={"/doors"} >{"Back"}</a>
+                            </>
+                          },
+                          None => html!{
+                            <>
+                              <ybc::Notification classes=classes!("is-info")>
+                                {"Fetching data ..."}
+                              </ybc::Notification>
+                              <a class={"button"} href={"/doors"} >{"Back"}</a>
+                            </>
+                          }
+                        }
                     }
                   }
                 </ybc::Tile>
