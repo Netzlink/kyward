@@ -6,7 +6,7 @@ run: dev.api.run
 
 dev.api.watch: kyward-api/Cargo.toml dev.ui.build
 	cd kyward-api && \
-	systemfd --no-pid -s http::8000 -- cargo watch -x run
+	RUST_BACKTRACE=1 cargo watch -x run
 dev.api.run: kyward-api/Cargo.toml dev.ui.build
 	cd kyward-api && \
 	cargo run

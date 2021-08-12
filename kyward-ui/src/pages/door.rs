@@ -14,6 +14,12 @@ pub enum Msg {
   Update,
   Delete,
   Return,
+  SetName(String),
+  SetCompartment(String),
+  SetLevel(String),
+  SetBuilding(String),
+  SetDescription(String),
+  Nothing,
 }
 
 #[derive(Clone, Properties)]
@@ -112,8 +118,69 @@ impl Component for DoorPage {
         self.fetching = Some(task);
         true
       }
+      Msg::SetName(name) => {
+        let mut door = match &self.doors {
+          Some(doors) => match doors.first() {
+            Some(door) => door,
+            None => return false,
+          },
+          None => return false,
+        }.clone();
+        door.name = name;
+        self.doors = Some(vec![door]);
+        true
+      }
+      Msg::SetCompartment(name) => {
+        let mut door = match &self.doors {
+          Some(doors) => match doors.first() {
+            Some(door) => door,
+            None => return false,
+          },
+          None => return false,
+        }.clone();
+        door.compartment = name;
+        self.doors = Some(vec![door]);
+        true
+      }
+      Msg::SetLevel(name) => {
+        let mut door = match &self.doors {
+          Some(doors) => match doors.first() {
+            Some(door) => door,
+            None => return false,
+          },
+          None => return false,
+        }.clone();
+        door.level = name;
+        self.doors = Some(vec![door]);
+        true
+      }
+      Msg::SetBuilding(name) => {
+        let mut door = match &self.doors {
+          Some(doors) => match doors.first() {
+            Some(door) => door,
+            None => return false,
+          },
+          None => return false,
+        }.clone();
+        door.building = name;
+        self.doors = Some(vec![door]);
+        true
+      }
+      Msg::SetDescription(name) => {
+        let mut door = match &self.doors {
+          Some(doors) => match doors.first() {
+            Some(door) => door,
+            None => return false,
+          },
+          None => return false,
+        }.clone();
+        door.description = name;
+        self.doors = Some(vec![door]);
+        true
+      }
       Msg::Return => true,
       Msg::Add => true,
+      Msg::Nothing => false,
     }
   }
 
@@ -147,6 +214,12 @@ impl Component for DoorPage {
                                 type={"text"}
                                 placeholder={"Name"}
                                 value={ door.name.to_owned() }
+                                onchange={self.link.callback(|event: ChangeData| {
+                                  match event {
+                                    ChangeData::Value(name) => Msg::SetName(name),
+                                    _ => Msg::Nothing,
+                                  }
+                                }).clone()}
                               />
                             </ybc::Block>
                             <ybc::Block>
@@ -156,6 +229,12 @@ impl Component for DoorPage {
                                 type={"text"}
                                 placeholder={"Compartment"}
                                 value={ door.compartment.to_owned() }
+                                onchange={self.link.callback(|event: ChangeData| {
+                                  match event {
+                                    ChangeData::Value(name) => Msg::SetCompartment(name),
+                                    _ => Msg::Nothing,
+                                  }
+                                }).clone()}
                               />
                             </ybc::Block>
                             <ybc::Block>
@@ -165,6 +244,12 @@ impl Component for DoorPage {
                                 type={"text"}
                                 placeholder={"Level"}
                                 value={ door.level.to_owned() }
+                                onchange={self.link.callback(|event: ChangeData| {
+                                  match event {
+                                    ChangeData::Value(name) => Msg::SetLevel(name),
+                                    _ => Msg::Nothing,
+                                  }
+                                }).clone()}
                               />
                             </ybc::Block>
                             <ybc::Block>
@@ -174,6 +259,12 @@ impl Component for DoorPage {
                                 type={"text"}
                                 placeholder={"Building"}
                                 value={ door.building.to_owned() }
+                                onchange={self.link.callback(|event: ChangeData| {
+                                  match event {
+                                    ChangeData::Value(name) => Msg::SetBuilding(name),
+                                    _ => Msg::Nothing,
+                                  }
+                                }).clone()}
                               />
                             </ybc::Block>
                             <ybc::Block>
@@ -183,6 +274,12 @@ impl Component for DoorPage {
                                 type={"text"}
                                 placeholder={"Description"}
                                 value={ door.description.to_owned() }
+                                onchange={self.link.callback(|event: ChangeData| {
+                                  match event {
+                                    ChangeData::Value(name) => Msg::SetDescription(name),
+                                    _ => Msg::Nothing,
+                                  }
+                                }).clone()}
                               />
                             </ybc::Block>
                             <hr/>
