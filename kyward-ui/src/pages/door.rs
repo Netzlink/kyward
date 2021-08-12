@@ -7,6 +7,14 @@ use yew::prelude::*;
 use yew::services::fetch::FetchService;
 use yew::services::fetch::{FetchTask, Request, Response};
 
+pub enum Action {
+  Name,
+  Compartment,
+  Level,
+  Building,
+  Description,
+}
+
 pub enum Msg {
   Add,
   Get,
@@ -14,11 +22,7 @@ pub enum Msg {
   Update,
   Delete,
   Return,
-  SetName(String),
-  SetCompartment(String),
-  SetLevel(String),
-  SetBuilding(String),
-  SetDescription(String),
+  Set(Action, String),
   Nothing,
 }
 
@@ -118,63 +122,22 @@ impl Component for DoorPage {
         self.fetching = Some(task);
         true
       }
-      Msg::SetName(name) => {
+      Msg::Set(action, value) => {
         let mut door = match &self.doors {
           Some(doors) => match doors.first() {
             Some(door) => door,
             None => return false,
           },
           None => return false,
-        }.clone();
-        door.name = name;
-        self.doors = Some(vec![door]);
-        true
-      }
-      Msg::SetCompartment(name) => {
-        let mut door = match &self.doors {
-          Some(doors) => match doors.first() {
-            Some(door) => door,
-            None => return false,
-          },
-          None => return false,
-        }.clone();
-        door.compartment = name;
-        self.doors = Some(vec![door]);
-        true
-      }
-      Msg::SetLevel(name) => {
-        let mut door = match &self.doors {
-          Some(doors) => match doors.first() {
-            Some(door) => door,
-            None => return false,
-          },
-          None => return false,
-        }.clone();
-        door.level = name;
-        self.doors = Some(vec![door]);
-        true
-      }
-      Msg::SetBuilding(name) => {
-        let mut door = match &self.doors {
-          Some(doors) => match doors.first() {
-            Some(door) => door,
-            None => return false,
-          },
-          None => return false,
-        }.clone();
-        door.building = name;
-        self.doors = Some(vec![door]);
-        true
-      }
-      Msg::SetDescription(name) => {
-        let mut door = match &self.doors {
-          Some(doors) => match doors.first() {
-            Some(door) => door,
-            None => return false,
-          },
-          None => return false,
-        }.clone();
-        door.description = name;
+        }
+        .clone();
+        match action {
+          Action::Name => door.name = value,
+          Action::Compartment => door.compartment = value,
+          Action::Building => door.building = value,
+          Action::Level => door.level = value,
+          Action::Description => door.description = value,
+        }
         self.doors = Some(vec![door]);
         true
       }
@@ -216,7 +179,7 @@ impl Component for DoorPage {
                                 value={ door.name.to_owned() }
                                 onchange={self.link.callback(|event: ChangeData| {
                                   match event {
-                                    ChangeData::Value(name) => Msg::SetName(name),
+                                    ChangeData::Value(name) => Msg::Set(Action::Name, name),
                                     _ => Msg::Nothing,
                                   }
                                 }).clone()}
@@ -231,7 +194,7 @@ impl Component for DoorPage {
                                 value={ door.compartment.to_owned() }
                                 onchange={self.link.callback(|event: ChangeData| {
                                   match event {
-                                    ChangeData::Value(name) => Msg::SetCompartment(name),
+                                    ChangeData::Value(name) => Msg::Set(Action::Compartment, name),
                                     _ => Msg::Nothing,
                                   }
                                 }).clone()}
@@ -246,7 +209,7 @@ impl Component for DoorPage {
                                 value={ door.level.to_owned() }
                                 onchange={self.link.callback(|event: ChangeData| {
                                   match event {
-                                    ChangeData::Value(name) => Msg::SetLevel(name),
+                                    ChangeData::Value(name) => Msg::Set(Action::Level, name),
                                     _ => Msg::Nothing,
                                   }
                                 }).clone()}
@@ -261,7 +224,7 @@ impl Component for DoorPage {
                                 value={ door.building.to_owned() }
                                 onchange={self.link.callback(|event: ChangeData| {
                                   match event {
-                                    ChangeData::Value(name) => Msg::SetBuilding(name),
+                                    ChangeData::Value(name) => Msg::Set(Action::Building, name),
                                     _ => Msg::Nothing,
                                   }
                                 }).clone()}
@@ -276,7 +239,7 @@ impl Component for DoorPage {
                                 value={ door.description.to_owned() }
                                 onchange={self.link.callback(|event: ChangeData| {
                                   match event {
-                                    ChangeData::Value(name) => Msg::SetDescription(name),
+                                    ChangeData::Value(name) => Msg::Set(Action::Description, name),
                                     _ => Msg::Nothing,
                                   }
                                 }).clone()}
