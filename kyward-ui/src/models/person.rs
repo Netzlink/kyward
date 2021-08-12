@@ -1,12 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(
-    Debug,
-    Clone,
-    PartialEq,
-    Deserialize,
-    Serialize,
-)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Person {
     pub id: i32,
     pub first_name: String,

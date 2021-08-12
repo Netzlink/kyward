@@ -1,6 +1,6 @@
-use yew::prelude::*;
-use ybc::TileCtx::{Child, Parent};
 use super::super::utils::new_hero;
+use ybc::TileCtx::{Child, Parent};
+use yew::prelude::*;
 
 pub enum Msg {}
 
@@ -13,9 +13,7 @@ impl Component for Home {
     type Properties = ();
 
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self {
-            link,
-        }
+        Self { link }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {

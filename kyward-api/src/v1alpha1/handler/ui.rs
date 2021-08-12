@@ -1,6 +1,6 @@
 use rocket::http::ContentType;
 use rocket::response::status::NotFound;
-use std::path::{PathBuf, Path};
+use std::path::{Path, PathBuf};
 
 const UI_ENTRYPOINT: &str = "index.html";
 

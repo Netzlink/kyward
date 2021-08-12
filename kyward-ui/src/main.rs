@@ -1,7 +1,7 @@
-mod models;
 mod app;
-mod router;
+mod models;
 mod pages;
+mod router;
 mod utils;
 
 fn main() {

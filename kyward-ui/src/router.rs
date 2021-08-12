@@ -1,7 +1,7 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use super::pages::{home, doors, door};
+use super::pages::{door, doors, home};
 
 #[derive(Switch, Debug, Clone)]
 pub enum AppRoute {
@@ -15,9 +15,7 @@ pub enum AppRoute {
     Index,
 }
 
-pub enum Msg {
-
-}
+pub enum Msg {}
 
 pub struct KywardRouter {
     link: ComponentLink<Self>,
@@ -28,9 +26,7 @@ impl Component for KywardRouter {
     type Properties = ();
 
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self {
-            link: link,
-        }
+        Self { link: link }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
@@ -44,18 +40,18 @@ impl Component for KywardRouter {
         false
     }
 
-    fn view (&self) -> Html {
-      html! {
-        <Router<AppRoute, ()>
-            render = Router::render(|switch: AppRoute| {
-                match switch {
-                    AppRoute::Index => html!{<home::Home/>},
-                    AppRoute::Home => html!{<home::Home/>},
-                    AppRoute::Doors => html!{<doors::Doors token="" />},
-                    AppRoute::Door(id) => html!{<door::DoorPage token="" id=id />}
-                }
-            })
-        />
-      }
+    fn view(&self) -> Html {
+        html! {
+          <Router<AppRoute, ()>
+              render = Router::render(|switch: AppRoute| {
+                  match switch {
+                      AppRoute::Index => html!{<home::Home/>},
+                      AppRoute::Home => html!{<home::Home/>},
+                      AppRoute::Doors => html!{<doors::Doors token="" />},
+                      AppRoute::Door(id) => html!{<door::DoorPage token="" id=id />}
+                  }
+              })
+          />
+        }
     }
 }

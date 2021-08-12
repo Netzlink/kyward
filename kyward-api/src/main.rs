@@ -15,7 +15,7 @@ mod database;
 mod schema;
 mod v1alpha1;
 
-use v1alpha1:: handler::{company, door, group, person, token, ui, version};
+use v1alpha1::handler::{company, door, group, person, token, ui, version};
 
 // https://blog.logrocket.com/create-a-backend-api-with-rust-and-postgres/
 // TODO: https://docs.rs/rocket_oauth2/0.4.1/rocket_oauth2/struct.OAuth2.html
