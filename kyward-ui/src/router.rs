@@ -18,7 +18,7 @@ pub enum AppRoute {
 pub enum Msg {}
 
 pub struct KywardRouter {
-    link: ComponentLink<Self>,
+    _link: ComponentLink<Self>,
 }
 
 impl Component for KywardRouter {
@@ -26,7 +26,7 @@ impl Component for KywardRouter {
     type Properties = ();
 
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { link: link }
+        Self { _link: link }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {

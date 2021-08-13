@@ -1,11 +1,10 @@
 use super::super::utils::new_hero;
-use ybc::TileCtx::{Child, Parent};
 use yew::prelude::*;
 
 pub enum Msg {}
 
 pub struct Home {
-    link: ComponentLink<Self>,
+    _link: ComponentLink<Self>,
 }
 
 impl Component for Home {
@@ -13,7 +12,7 @@ impl Component for Home {
     type Properties = ();
 
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { link }
+        Self { _link: link }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {

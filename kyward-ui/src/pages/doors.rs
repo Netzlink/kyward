@@ -7,7 +7,6 @@ use yew::services::fetch::FetchService;
 use yew::services::fetch::{FetchTask, Request, Response};
 
 pub enum Msg {
-    AddDoor(Door),
     GetResp(Result<Vec<Door>, anyhow::Error>),
     Refresh,
 }
@@ -21,7 +20,7 @@ pub struct Doors {
     link: ComponentLink<Self>,
     doors: Vec<Door>,
     fetching: Option<FetchTask>,
-    props: Properties,
+    _props: Properties,
 }
 
 impl Component for Doors {
@@ -39,24 +38,18 @@ impl Component for Doors {
             link,
             fetching: None,
             doors: vec![],
-            props: props,
+            _props: props,
         });
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::AddDoor(new_door) => {
-                // TODO: send to API
-
-                self.doors.push(new_door);
-                true
-            }
             Msg::GetResp(resp) => {
                 self.doors = resp.expect("Test");
                 true
             }
             Msg::Refresh => {
-                let req = Request::get("http://localhost:8000/api/v1alpha1/door")
+                let req = Request::get("/api/v1alpha1/door")
                     .body(Nothing)
                     .expect("can make req to jsonplaceholder");
 

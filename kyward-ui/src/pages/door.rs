@@ -6,6 +6,7 @@ use yew::format::{Json, Nothing};
 use yew::prelude::*;
 use yew::services::fetch::FetchService;
 use yew::services::fetch::{FetchTask, Request, Response};
+use yew::services::console::ConsoleService;
 
 pub enum Action {
     Name,
@@ -16,7 +17,7 @@ pub enum Action {
 }
 
 pub enum Msg {
-    Add,
+    _Add,
     Get,
     GetResp(Result<Vec<Door>, anyhow::Error>),
     Update,
@@ -74,7 +75,7 @@ impl Component for DoorPage {
             }
             Msg::Get => {
                 let req = match Request::get(format!(
-                    "http://localhost:8000/api/v1alpha1/door/{0}",
+                    "/api/v1alpha1/door/{0}",
                     self.props.id
                 ))
                 .body(Nothing)
@@ -88,8 +89,14 @@ impl Component for DoorPage {
 
                 let cb = self.link.callback(
                     |response: Response<Json<Result<Vec<Door>, anyhow::Error>>>| {
-                        let Json(data) = response.into_body();
-                        Msg::GetResp(data)
+                      let Json(data) = response.into_body();
+                      match data {
+                        Ok(_) => return Msg::GetResp(data),
+                        Err(err) => {
+                          ConsoleService::info(format!("Error: {:?}", err).as_str());
+                          return Msg::Nothing
+                        }
+                      }
                     },
                 );
 
@@ -106,7 +113,7 @@ impl Component for DoorPage {
             }
             Msg::Delete => {
                 let req = match Request::delete(format!(
-                    "http://localhost:8000/api/v1alpha1/door/{0}",
+                    "/api/v1alpha1/door/{0}",
                     self.props.id
                 ))
                 .body(Nothing)
@@ -120,7 +127,16 @@ impl Component for DoorPage {
 
                 let cb = self
                     .link
-                    .callback(|_response: Response<Json<Result<i32, anyhow::Error>>>| Msg::Return);
+                    .callback(|response: Response<Json<Result<i32, anyhow::Error>>>| {
+                      let Json(data) = response.into_body();
+                      match data {
+                        Ok(_data) => {},
+                        Err(err) => {
+                          ConsoleService::info(format!("Error: {:?}", err).as_str())
+                        }
+                      };
+                      Msg::Return
+                    });
 
                 match FetchService::fetch(req, cb) {
                     Ok(task) => {
@@ -153,7 +169,7 @@ impl Component for DoorPage {
                 }
                 .clone());
 
-                let req = match Request::put("http://localhost:8000/api/v1alpha1/door")
+                let req = match Request::put("/api/v1alpha1/door")
                     .header("Content-Type", "application/json")
                     .body(Json(door))
                 {
@@ -166,7 +182,16 @@ impl Component for DoorPage {
 
                 let cb = self
                     .link
-                    .callback(|_response: Response<Json<Result<i32, anyhow::Error>>>| Msg::Get);
+                    .callback(|response: Response<Json<Result<i32, anyhow::Error>>>| {
+                      let Json(data) = response.into_body();
+                      match data {
+                        Ok(_data) => {},
+                        Err(err) => {
+                          ConsoleService::info(format!("Error: {:?}", err).as_str())
+                        }
+                      };
+                      Msg::Get
+                    });
 
                 match FetchService::fetch(req, cb) {
                     Ok(task) => {
@@ -199,7 +224,7 @@ impl Component for DoorPage {
                 true
             }
             Msg::Return => true,
-            Msg::Add => true,
+            Msg::_Add => true,
             Msg::Nothing => false,
         }
     }
@@ -224,7 +249,7 @@ impl Component for DoorPage {
                             <>
                               <ybc::Notification classes=classes!("is-danger")>
                                 <ybc::Title>
-                                  {"Error"}
+                                  {"Not Found"}
                                 </ybc::Title>
                                 {"An error occurred. Dunno... Maybe check your Connection"}
                                 <pre>
@@ -239,7 +264,19 @@ impl Component for DoorPage {
                           Some(doors) => {
                             let door = match doors.first() {
                               Some(door) => door,
-                              None => panic!("Err"),
+                              None => {
+                                return html!{
+                                  <>
+                                    <ybc::Notification classes=classes!("is-danger")>
+                                      <ybc::Title>
+                                        {"Not Found"}
+                                      </ybc::Title>
+                                      {"No door with that name found. Wanna add one?"}
+                                    </ybc::Notification>
+                                    <a class={"button"} href={"/doors"} >{"Back"}</a>
+                                  </>
+                                }
+                              },
                             };
                             html!{
                               <>

@@ -6,7 +6,7 @@ pub enum Msg {}
 pub struct App {
     // `ComponentLink` is like a reference to a component.
     // It can be used to send messages to the component
-    link: ComponentLink<Self>,
+    _link: ComponentLink<Self>,
 }
 
 impl Component for App {
@@ -14,7 +14,7 @@ impl Component for App {
     type Properties = ();
 
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { link }
+        Self { _link: link }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
