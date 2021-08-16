@@ -328,8 +328,7 @@ impl Component for DoorPage {
                           <a class={"button"} href={"/doors"} >{"Back"}</a>
                         </>
                       },
-                      None =>
-                      match &self.doors {
+                      None => match &self.doors {
                         Some(doors) => {
                           let door = match doors.first() {
                             Some(door) => door.clone(),
@@ -426,6 +425,7 @@ impl Component for DoorPage {
                                 />
                               </ybc::Block>
                               <hr/>
+                              { self.completion() }
                               <div class="buttons">
                                 <ybc::Button
                                   classes=classes!("is-primary")
@@ -465,6 +465,34 @@ impl Component for DoorPage {
           </ybc::Container>
         </ybc::Section>
       </>
+    }
+  }
+}
+
+impl DoorPage {
+  fn completion(&self) -> Html {
+    let mut value = 0.0;
+    let door = match match &self.doors {
+      Some(doors) => doors,
+      None => panic!("No doors"),
+    }.first() {
+      Some(door) => door.clone(),
+      None => panic!("No door")
+    };
+    let opts = vec![
+      door.name,
+      door.compartment,
+      door.level,
+      door.building,
+      door.description
+    ];
+    for i in opts.clone().into_iter() {
+      if i.len() > 0 {
+        value += 1.0;
+      }
+    };
+    html!{
+      <ybc::Progress value=value max=opts.len() as f32 />
     }
   }
 }
