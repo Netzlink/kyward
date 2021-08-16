@@ -5,13 +5,16 @@ use yew::format::{Json, Nothing};
 use yew::prelude::*;
 use yew::services::fetch::FetchService;
 use yew::services::fetch::{FetchTask, Request, Response};
+use yew::services::ConsoleService;
+use yew::web_sys;
 
 pub enum Msg {
     GetResp(Result<Vec<Door>, anyhow::Error>),
     Refresh,
+    Add,
 }
 
-#[derive(Clone, Properties)]
+#[derive(Clone, Properties, PartialEq)]
 pub struct Properties {
     pub token: String,
 }
@@ -20,7 +23,7 @@ pub struct Doors {
     link: ComponentLink<Self>,
     doors: Vec<Door>,
     fetching: Option<FetchTask>,
-    _props: Properties,
+    props: Properties,
 }
 
 impl Component for Doors {
@@ -38,7 +41,7 @@ impl Component for Doors {
             link,
             fetching: None,
             doors: vec![],
-            _props: props,
+            props: props,
         });
     }
 
@@ -64,19 +67,38 @@ impl Component for Doors {
                 self.fetching = Some(task);
                 true
             }
+            Msg::Add => {
+                let next = match self.doors.last() {
+                    Some(n) => n.id + 1,
+                    None => return false,
+                };
+                let window: web_sys::Window = match web_sys::window() {
+                    Some(window) => window,
+                    None => {
+                        ConsoleService::warn("No window to catch by websys!");
+                        return false;
+                    }
+                };
+                return match window
+                    .location()
+                    .set_pathname(format!("/door/add/{0}", next).as_str())
+                {
+                    Ok(_) => true,
+                    Err(err) => {
+                        ConsoleService::error(format!("An error occured: {:#?}", err).as_str());
+                        false
+                    }
+                };
+            }
         }
     }
 
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        // Should only return "true" if new properties are different to
-        // previously received properties.
-        // This component has no properties so we will always return "false".
-        false
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        self.props != props
     }
 
     fn view(&self) -> Html {
         // https://bulma.io/documentation/overview/start/
-        let cb = self.link.callback(|_| Msg::Refresh);
         html! {
           <>
             {new_hero("Doors", "Manage doors accessible by a group.")}
@@ -85,9 +107,14 @@ impl Component for Doors {
                 <ybc::Tile> // ctx=Ancestor
                   <ybc::Tile ctx=Parent vertical=true>
                     <ybc::Tile ctx=Child classes=classes!("box")>
-                      <ybc::Button onclick=cb.clone()>
-                        { "refresh" }
-                      </ybc::Button>
+                      <div class="buttons">
+                        <ybc::Button classes=classes!("is-primary") onclick=self.link.callback(|_| Msg::Add).clone() >
+                          { "Add" }
+                        </ybc::Button>
+                        <ybc::Button classes=classes!("is-info", "is-outlined") onclick=self.link.callback(|_| Msg::Refresh).clone() >
+                          { "refresh" }
+                        </ybc::Button>
+                      </div>
                       <ybc::Table classes=classes!("is-fullwidth")>
                         <thead>
                           <tr>

@@ -9,6 +9,8 @@ pub enum AppRoute {
     Doors,
     #[to = "/door/{id}"]
     Door(i32),
+    #[to = "/door/add/{id}"]
+    DoorAdd(i32),
     #[to = "/home"]
     Home,
     #[to = "/"]
@@ -48,7 +50,8 @@ impl Component for KywardRouter {
                       AppRoute::Index => html!{<home::Home/>},
                       AppRoute::Home => html!{<home::Home/>},
                       AppRoute::Doors => html!{<doors::Doors token="" />},
-                      AppRoute::Door(id) => html!{<door::DoorPage token="" id=id />}
+                      AppRoute::Door(id) => html!{<door::DoorPage token="" id=id add=false />},
+                      AppRoute::DoorAdd(id) => html!{<door::DoorPage token="" id=id add=true />}
                   }
               })
           />
