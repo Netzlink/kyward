@@ -2,3 +2,5 @@
 /*/Cargo.lock
 dev.sqlite*
 /*/dist
+target
+Cargo.lock

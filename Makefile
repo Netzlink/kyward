@@ -4,6 +4,9 @@ build: dev.api.build
 
 run: dev.api.run
 
+container.build: Dockerfile
+	docker build -f Dockerfile . -t kyward
+
 dev.api.watch: kyward-api/Cargo.toml dev.ui.build
 	cd kyward-api && \
 	RUST_BACKTRACE=1 cargo watch -x run
