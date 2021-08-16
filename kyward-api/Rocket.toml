@@ -3,3 +3,4 @@ kyward = { url = "../dev.sqlite" }
 
 [default]
 log_level = "debug"
+address = "0.0.0.0"

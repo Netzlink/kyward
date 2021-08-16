@@ -49,6 +49,10 @@ impl Component for App {
               navend=html! {
                 <>
                   <a class=classes!{"navbar-item"} href={"/doors"} >{"Doors"}</a>
+                  <a class=classes!{"navbar-item"} href={"/companies"} >{"Companies"}</a>
+                  <a class=classes!{"navbar-item"} href={"/groups"} >{"Groups"}</a>
+                  <a class=classes!{"navbar-item"} href={"/persons"} >{"Persons"}</a>
+                  <a class=classes!{"navbar-item"} href={"/tokens"} >{"Tokens"}</a>
                 </>
               }
             />
