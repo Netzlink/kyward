@@ -4,10 +4,13 @@
         "connection",
         "csrf",
         "dotenv",
+        "occured",
         "onclick",
         "pkce",
+        "reqwest",
         "sqlite",
         "token",
-        "wasm"
+        "wasm",
+        "websys"
     ]
 }

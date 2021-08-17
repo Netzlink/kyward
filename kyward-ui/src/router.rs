@@ -5,6 +5,7 @@ use super::pages::{
     login,
     door, 
     doors,
+    company,
     companies,
     home
 };
@@ -23,6 +24,10 @@ pub enum AppRoute {
     DoorAdd(i32),
     #[to = "/companies"]
     Companies,
+    #[to = "/company/{id}"]
+    Company(i32),
+    #[to = "/company/add/{id}"]
+    CompanyAdd(i32),
     #[to = "/home"]
     Home,
     #[to = "/"]
@@ -90,7 +95,21 @@ impl Component for KywardRouter {
                       },
                       AppRoute::Companies => html!{
                         <companies::Companies 
-                            token=""
+                          token=""
+                        />
+                      },
+                      AppRoute::Company(id) => html!{
+                        <company::CompanyPage
+                          token=""
+                          id=id
+                          add=false
+                        />
+                      },
+                      AppRoute::CompanyAdd(id) => html!{
+                        <company::CompanyPage
+                          token=""
+                          id=id
+                          add=true
                         />
                       }
                   }
