@@ -1,5 +1,5 @@
-use super::router::KywardRouter;
 use super::pages::login::Login;
+use super::router::KywardRouter;
 use yew::prelude::*;
 
 pub enum Msg {}
@@ -16,9 +16,9 @@ impl Component for App {
     type Properties = ();
 
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { 
-          _link: link,
-          token: None,
+        Self {
+            _link: link,
+            token: None,
         }
     }
 

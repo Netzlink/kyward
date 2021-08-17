@@ -1,14 +1,7 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use super::pages::{
-    login,
-    door, 
-    doors,
-    company,
-    companies,
-    home
-};
+use super::pages::{companies, company, door, doors, home, login};
 
 #[derive(Switch, Debug, Clone)]
 pub enum AppRoute {
@@ -51,7 +44,7 @@ impl Component for KywardRouter {
     type Properties = Properties;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { 
+        Self {
             _link: link,
             props: props,
         }
@@ -75,26 +68,26 @@ impl Component for KywardRouter {
                       AppRoute::Login => html!{<login::Login/>},
                       AppRoute::Logout => html!{<>{"Not yet Implemented"}</>},
                       AppRoute::Doors => html!{
-                        <doors::Doors 
+                        <doors::Doors
                           token=""
                         />
                       },
                       AppRoute::Door(id) => html!{
                         <door::DoorPage
                           token=""
-                          id=id 
-                          add=false 
+                          id=id
+                          add=false
                         />
                       },
                       AppRoute::DoorAdd(id) => html!{
-                        <door::DoorPage 
+                        <door::DoorPage
                           token=""
-                          id=id 
-                          add=true 
+                          id=id
+                          add=true
                         />
                       },
                       AppRoute::Companies => html!{
-                        <companies::Companies 
+                        <companies::Companies
                           token=""
                         />
                       },
