@@ -18,7 +18,7 @@ impl Component for App {
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self { 
           _link: link,
-          token: Some("".to_string()),
+          token: None,
         }
     }
 
