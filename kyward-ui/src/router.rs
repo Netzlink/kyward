@@ -2,6 +2,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use super::pages::{
+    login,
     door, 
     doors,
     companies,
@@ -10,6 +11,10 @@ use super::pages::{
 
 #[derive(Switch, Debug, Clone)]
 pub enum AppRoute {
+    #[to = "/login"]
+    Login,
+    #[to = "/logout"]
+    Logout,
     #[to = "/doors"]
     Doors,
     #[to = "/door/{id}"]
@@ -26,16 +31,25 @@ pub enum AppRoute {
 
 pub enum Msg {}
 
+#[derive(Clone, Properties, PartialEq)]
+pub struct Properties {
+    pub token: String,
+}
+
 pub struct KywardRouter {
     _link: ComponentLink<Self>,
+    props: Properties,
 }
 
 impl Component for KywardRouter {
     type Message = Msg;
-    type Properties = ();
+    type Properties = Properties;
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { _link: link }
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self { 
+            _link: link,
+            props: props,
+        }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
@@ -56,10 +70,32 @@ impl Component for KywardRouter {
                   match switch {
                       AppRoute::Index => html!{<home::Home/>},
                       AppRoute::Home => html!{<home::Home/>},
-                      AppRoute::Doors => html!{<doors::Doors token="" />},
-                      AppRoute::Door(id) => html!{<door::DoorPage token="" id=id add=false />},
-                      AppRoute::DoorAdd(id) => html!{<door::DoorPage token="" id=id add=true />},
-                      AppRoute::Companies => html!{<companies::Companies token="" />}
+                      AppRoute::Login => html!{<login::Login/>},
+                      AppRoute::Logout => html!{<>{"Not yet Implemented"}</>},
+                      AppRoute::Doors => html!{
+                        <doors::Doors 
+                          token=""
+                        />
+                      },
+                      AppRoute::Door(id) => html!{
+                        <door::DoorPage
+                          token=""
+                          id=id 
+                          add=false 
+                        />
+                      },
+                      AppRoute::DoorAdd(id) => html!{
+                        <door::DoorPage 
+                          token=""
+                          id=id 
+                          add=true 
+                        />
+                      },
+                      AppRoute::Companies => html!{
+                        <companies::Companies 
+                            token=""
+                        />
+                      }
                   }
               })
           />
