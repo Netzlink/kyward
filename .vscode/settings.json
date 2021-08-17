@@ -1,9 +1,13 @@
 {
     "cSpell.words": [
+        "challenge",
         "connection",
+        "csrf",
         "dotenv",
         "onclick",
+        "pkce",
         "sqlite",
+        "token",
         "wasm"
     ]
 }
