@@ -83,6 +83,7 @@ impl Component for CompanyPage {
             }
             Msg::Get => {
                 let req = match Request::get(format!("/api/v1alpha1/company/{0}", self.props.id))
+                    .header("Authorization", format!("Bearer {0}", self.props.token))
                     .body(Nothing)
                 {
                     Ok(req) => req,
@@ -118,6 +119,7 @@ impl Component for CompanyPage {
             }
             Msg::Delete => {
                 let req = match Request::delete(format!("/api/v1alpha1/company/{0}", self.props.id))
+                    .header("Authorization", format!("Bearer {0}", self.props.token))
                     .body(Nothing)
                 {
                     Ok(req) => req,
@@ -172,6 +174,7 @@ impl Component for CompanyPage {
                 .clone());
 
                 let req = match Request::put("/api/v1alpha1/door")
+                    .header("Authorization", format!("Bearer {0}", self.props.token))
                     .header("Content-Type", "application/json")
                     .body(Json(company))
                 {
@@ -259,6 +262,7 @@ impl Component for CompanyPage {
                 .clone());
 
                 let req = match Request::post("/api/v1alpha1/company")
+                    .header("Authorization", format!("Bearer {0}", self.props.token))
                     .header("Content-Type", "application/json")
                     .body(Json(company))
                 {

@@ -89,6 +89,7 @@ impl Component for DoorPage {
             }
             Msg::Get => {
                 let req = match Request::get(format!("/api/v1alpha1/door/{0}", self.props.id))
+                    .header("Authorization", format!("Bearer {0}", self.props.token))
                     .body(Nothing)
                 {
                     Ok(req) => req,
@@ -124,6 +125,7 @@ impl Component for DoorPage {
             }
             Msg::Delete => {
                 let req = match Request::delete(format!("/api/v1alpha1/door/{0}", self.props.id))
+                    .header("Authorization", format!("Bearer {0}", self.props.token))
                     .body(Nothing)
                 {
                     Ok(req) => req,
@@ -179,6 +181,7 @@ impl Component for DoorPage {
 
                 let req = match Request::put("/api/v1alpha1/door")
                     .header("Content-Type", "application/json")
+                    .header("Authorization", format!("Bearer {0}", self.props.token))
                     .body(Json(door))
                 {
                     Ok(req) => req,
@@ -269,6 +272,7 @@ impl Component for DoorPage {
 
                 let req = match Request::post("/api/v1alpha1/door")
                     .header("Content-Type", "application/json")
+                    .header("Authorization", format!("Bearer {0}", self.props.token))
                     .body(Json(door))
                 {
                     Ok(req) => req,

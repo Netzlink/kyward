@@ -48,7 +48,7 @@ impl Component for Login {
             link: link,
             props: props,
             oauth: OauthConfig {
-                client_id: "0d73fe1d-c27c-410b-bf83-1e12d82627fe"
+                client_id: ""
                     .to_string(),
                 auth_url: "".to_string(),
                 token_url: "".to_string(),
