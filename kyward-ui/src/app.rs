@@ -1,14 +1,14 @@
 use super::pages::login::Login;
 use super::router::KywardRouter;
+use serde::{Deserialize, Serialize};
+use serde_json;
+use wasm_cookies;
 use yew::prelude::*;
 use yew::services::ConsoleService;
-use wasm_cookies;
-use serde_json;
-use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Clone)]
 pub struct Token {
-  pub access_token: String
+    pub access_token: String,
 }
 
 pub enum Msg {}
@@ -28,17 +28,17 @@ impl Component for App {
         Self {
             _link: link,
             token: match wasm_cookies::get("token") {
-              Some(token_result) => match token_result {
-                Ok(token_str) => {
-                  let token: Token = serde_json::from_str(token_str.as_str()).unwrap();
-                  Some(token.access_token)
+                Some(token_result) => match token_result {
+                    Ok(token_str) => {
+                        let token: Token = serde_json::from_str(token_str.as_str()).unwrap();
+                        Some(token.access_token)
+                    }
+                    Err(err) => {
+                        ConsoleService::error(format!("Error: {:#?}", err).as_str());
+                        None
+                    }
                 },
-                Err(err) => {
-                  ConsoleService::error(format!("Error: {:#?}", err).as_str());
-                  None
-                },
-              },
-              None => None,
+                None => None,
             },
         }
     }

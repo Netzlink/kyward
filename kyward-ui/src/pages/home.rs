@@ -1,10 +1,10 @@
-use super::super::utils::new_hero;
-use yew::prelude::*;
 use super::super::models::user::User;
-use yew::services::ConsoleService;
-use regex::Regex;
+use super::super::utils::new_hero;
 use base64;
+use regex::Regex;
 use std::str;
+use yew::prelude::*;
+use yew::services::ConsoleService;
 
 pub enum Msg {
     GetUser,
@@ -27,27 +27,26 @@ impl Component for Home {
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         return |s: Self| -> Self {
-            s.link.callback(|s: Msg|{s}).emit(Msg::GetUser);
+            s.link.callback(|s: Msg| s).emit(Msg::GetUser);
             s
-        } (
-            Self { 
-                link: link,
-                user: None,
-                props: props,
-            }
-        )
+        }(Self {
+            link: link,
+            user: None,
+            props: props,
+        });
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::GetUser => {
                 let claims_json = match Regex::new(r"\.([a-zA-Z\d+/]+)\.")
-                  .unwrap()
-                  .captures(self.props.token.as_str()) {
+                    .unwrap()
+                    .captures(self.props.token.as_str())
+                {
                     Some(json) => json,
                     None => {
                         ConsoleService::warn("Error: No valid JWT");
-                        return false
+                        return false;
                     }
                 }[1]
                 .to_string();
@@ -55,27 +54,26 @@ impl Component for Home {
                     Ok(bytes) => bytes,
                     Err(err) => {
                         ConsoleService::warn(format!("Error: {:#?}", err).as_str());
-                        return false
-                    } 
+                        return false;
+                    }
                 };
-                let user: User = match serde_json::from_str(
-                    match str::from_utf8(bytes.as_slice()) {
+                let user: User =
+                    match serde_json::from_str(match str::from_utf8(bytes.as_slice()) {
                         Ok(string) => string,
                         Err(err) => {
                             ConsoleService::warn(format!("Error: {:#?}", err).as_str());
-                            return false
+                            return false;
                         }
-                    }
-                ) {
-                    Ok(user) => user,
-                    Err(err) => {
-                        ConsoleService::warn(format!("Error: {:#?}", err).as_str());
-                        return false
-                    }
-                };
+                    }) {
+                        Ok(user) => user,
+                        Err(err) => {
+                            ConsoleService::warn(format!("Error: {:#?}", err).as_str());
+                            return false;
+                        }
+                    };
                 self.user = Some(user);
                 true
-            },
+            }
         }
     }
 
@@ -91,7 +89,7 @@ impl Component for Home {
               <ybc::Container fluid=true>
               <ybc::Section classes=classes!("is-large")>
                 <ybc::Title>
-                  { 
+                  {
                     format!("Hello, {0}!", match self.user.clone() {
                         Some(user) => user.given_name,
                         None => "Anon".to_string(),

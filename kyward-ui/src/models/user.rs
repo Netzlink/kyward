@@ -5,5 +5,5 @@ pub struct User {
     pub name: String,
     pub family_name: String,
     pub given_name: String,
-    pub unique_name: String
+    pub unique_name: String,
 }

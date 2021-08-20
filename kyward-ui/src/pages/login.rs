@@ -50,9 +50,9 @@ impl Component for Login {
             oauth: OauthConfig {
                 client_id: ""
                     .to_string(),
-                auth_url: "".to_string(),
-                token_url: "".to_string(),
-                redirect_url: "".to_string(),
+                auth_url: "https://login.microsoftonline.com/73c5b76c-7cf4-49f4-bb66-d044d83a2dc5/oauth2/v2.0/authorize".to_string(),
+                token_url: "https://login.microsoftonline.com/73c5b76c-7cf4-49f4-bb66-d044d83a2dc5/oauth2/v2.0/token".to_string(),
+                redirect_url: "http://localhost:8000/auth/callback".to_string(),
             },
         };
         let window: web_sys::Window = match web_sys::window() {
@@ -88,7 +88,9 @@ impl Component for Login {
                         match serde_json::to_string(&token) {
                             Ok(json) => json,
                             Err(err) => {
-                                ConsoleService::error(format!("An error occured: {:#?}", err).as_str());
+                                ConsoleService::error(
+                                    format!("An error occured: {:#?}", err).as_str(),
+                                );
                                 panic!("An error occured: {:#?}", err)
                             }
                         }
@@ -96,10 +98,10 @@ impl Component for Login {
                         &cookie_opts,
                     );
                     match window.location().set_href("/") {
-                        Ok(_) => {},
+                        Ok(_) => {}
                         Err(err) => {
                             ConsoleService::error(format!("Error: {:#?}", err).as_str());
-                        },
+                        }
                     };
                 };
                 task::block_on(get_token_future);
