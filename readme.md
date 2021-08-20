@@ -3,7 +3,7 @@ A simple token management tool written in almost completly rust.
 
 ## Screenshot
 _Doors Section_
-![Doors Section Screenshot](assets/doors_section.jpeg)
+![Doors Section Screenshot](assets/doors_section.png)
 
 ## Setup 
 _Dev_
