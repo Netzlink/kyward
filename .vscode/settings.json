@@ -6,6 +6,7 @@
         "corsifiy",
         "csrf",
         "dotenv",
+        "jsonwebtoken",
         "navbrand",
         "navend",
         "occured",

@@ -1,9 +1,10 @@
 // use super::super::super::router::KywardRouter;
 use anyhow;
+use async_std::task;
 use chrono::{prelude::*, Duration};
 use oauth2::reqwest::async_http_client;
 use oauth2::{
-    basic::BasicClient, url::Url, AuthUrl, AuthType, AuthorizationCode, ClientId, CsrfToken,
+    basic::BasicClient, url::Url, AuthType, AuthUrl, AuthorizationCode, ClientId, CsrfToken,
     PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, Scope, TokenUrl,
 };
 use regex::Regex;
@@ -13,7 +14,6 @@ use ybc::TileSize::Four;
 use yew::prelude::*;
 use yew::services::ConsoleService;
 use yew::web_sys;
-use async_std::task;
 
 type TokenResponse =
     oauth2::StandardTokenResponse<oauth2::EmptyExtraTokenFields, oauth2::basic::BasicTokenType>;
@@ -48,11 +48,11 @@ impl Component for Login {
             link: link,
             props: props,
             oauth: OauthConfig {
-                client_id: ""
+                client_id: "0d73fe1d-c27c-410b-bf83-1e12d82627fe"
                     .to_string(),
                 auth_url: "".to_string(),
                 token_url: "".to_string(),
-                redirect_url: "http://localhost:8000/auth/callback".to_string(),
+                redirect_url: "".to_string(),
             },
         };
         let window: web_sys::Window = match web_sys::window() {
@@ -73,11 +73,6 @@ impl Component for Login {
         {
             "/auth/callback" => {
                 let oauth = login.oauth.clone();
-                let get_token_future = async move {
-                  let token = get_token(&oauth, window).await.unwrap();
-                  token
-                };
-                let token = task::block_on(get_token_future);
                 let cookie_opts = wasm_cookies::CookieOptions {
                     path: Some("/"),
                     domain: None,
@@ -85,19 +80,29 @@ impl Component for Login {
                     same_site: wasm_cookies::SameSite::Strict,
                     secure: false,
                 };
-                wasm_cookies::set(
-                    "token",
-                    match serde_json::to_string(&token) {
-                        Ok(json) => json,
-                        Err(err) => {
-                            ConsoleService::error(format!("An error occured: {:#?}", err).as_str());
-                            panic!("An error occured: {:#?}", err)
+                let get_token_future = async move {
+                    let token = get_token(&oauth, window.clone()).await.unwrap();
+                    ConsoleService::info(format!("Token: {:#?}", token).as_str());
+                    wasm_cookies::set(
+                        "token",
+                        match serde_json::to_string(&token) {
+                            Ok(json) => json,
+                            Err(err) => {
+                                ConsoleService::error(format!("An error occured: {:#?}", err).as_str());
+                                panic!("An error occured: {:#?}", err)
+                            }
                         }
-                    }
-                    .as_str(),
-                    &cookie_opts,
-                );
-                ConsoleService::info(format!("Token: {:#?}", token).as_str());
+                        .as_str(),
+                        &cookie_opts,
+                    );
+                    match window.location().set_href("/") {
+                        Ok(_) => {},
+                        Err(err) => {
+                            ConsoleService::error(format!("Error: {:#?}", err).as_str());
+                        },
+                    };
+                };
+                task::block_on(get_token_future);
             }
             _ => {}
         };
@@ -118,7 +123,7 @@ impl Component for Login {
                 let cookie_opts = wasm_cookies::CookieOptions {
                     path: Some("/"),
                     domain: None,
-                    expires: Some((Local::now() + Duration::minutes(30)).to_string()),
+                    expires: Some((Local::now() + Duration::minutes(1)).to_string()),
                     same_site: wasm_cookies::SameSite::Strict,
                     secure: false,
                 };
@@ -284,6 +289,7 @@ async fn get_token(
     let token_result = get_oauth_client(oauth_config)?
         .exchange_code(AuthorizationCode::new(code))
         .set_pkce_verifier(pkce_verifier)
-        .request_async(async_http_client).await?;
+        .request_async(async_http_client)
+        .await?;
     Ok(token_result)
 }

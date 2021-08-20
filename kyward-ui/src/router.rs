@@ -59,48 +59,49 @@ impl Component for KywardRouter {
     }
 
     fn view(&self) -> Html {
+        let token = self.props.token.clone();
         html! {
           <Router<AppRoute, ()>
-              render = Router::render(|switch: AppRoute| {
+              render = Router::render(move |switch: AppRoute| {
                   match switch {
-                      AppRoute::Index => html!{<home::Home/>},
-                      AppRoute::Home => html!{<home::Home/>},
+                      AppRoute::Index => html!{<home::Home token=token.clone() />},
+                      AppRoute::Home => html!{<home::Home token=token.clone() />},
                       AppRoute::Login => html!{<login::Login/>},
                       AppRoute::Logout => html!{<>{"Not yet Implemented"}</>},
                       AppRoute::Doors => html!{
                         <doors::Doors
-                          token=""
+                          token=token.clone()
                         />
                       },
                       AppRoute::Door(id) => html!{
                         <door::DoorPage
-                          token=""
+                          token=token.clone()
                           id=id
                           add=false
                         />
                       },
                       AppRoute::DoorAdd(id) => html!{
                         <door::DoorPage
-                          token=""
+                          token=token.clone()
                           id=id
                           add=true
                         />
                       },
                       AppRoute::Companies => html!{
                         <companies::Companies
-                          token=""
+                          token=token.clone()
                         />
                       },
                       AppRoute::Company(id) => html!{
                         <company::CompanyPage
-                          token=""
+                          token=token.clone()
                           id=id
                           add=false
                         />
                       },
                       AppRoute::CompanyAdd(id) => html!{
                         <company::CompanyPage
-                          token=""
+                          token=token.clone()
                           id=id
                           add=true
                         />
