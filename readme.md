@@ -10,6 +10,11 @@ _Dev_
 ```bash
 make run
 ```
+_Docker_
+```bash
+docker build -f Dockerfile . -t kyward
+docker run --rm -p 8000:8000 kyward:latest
+```
 
 ## Disclamer
 this project is under heavy development and not ready for deployment.
