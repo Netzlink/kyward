@@ -1,6 +1,8 @@
 use super::pages::login::Login;
 use super::router::KywardRouter;
 use yew::prelude::*;
+use yew::services::ConsoleService;
+use wasm_cookies;
 
 pub enum Msg {}
 
@@ -18,7 +20,16 @@ impl Component for App {
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             _link: link,
-            token: None,
+            token: match wasm_cookies::get("token") {
+              Some(token_result) => match token_result {
+                Ok(token) => Some(token),
+                Err(err) => {
+                  ConsoleService::info(format!("Error: {:#?}", err).as_str());
+                  None
+                },
+              },
+              None => None,
+            },
         }
     }
 

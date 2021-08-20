@@ -3,15 +3,22 @@
         "challenge",
         "chrono",
         "connection",
+        "corsifiy",
         "csrf",
         "dotenv",
+        "navbrand",
+        "navend",
         "occured",
         "onclick",
+        "openid",
         "pkce",
+        "proxy",
         "reqwest",
+        "serde",
         "sqlite",
         "token",
         "wasm",
+        "wasmbind",
         "websys"
     ]
 }

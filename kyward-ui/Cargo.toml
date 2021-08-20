@@ -21,4 +21,5 @@ anyhow = "1.0.42"
 oauth2 = "4.1"
 regex = "1.5.4"
 wasm-cookies = "0.1.0"
-chrono = "0.4.19"
+chrono = { version = "0.4.19", features = ["wasmbind"] }
+async-std = "1.9.0"

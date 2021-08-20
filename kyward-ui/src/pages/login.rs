@@ -1,9 +1,9 @@
 // use super::super::super::router::KywardRouter;
 use anyhow;
 use chrono::{prelude::*, Duration};
-use oauth2::reqwest::http_client;
+use oauth2::reqwest::async_http_client;
 use oauth2::{
-    basic::BasicClient, url::Url, AuthUrl, AuthorizationCode, ClientId, CsrfToken,
+    basic::BasicClient, url::Url, AuthUrl, AuthType, AuthorizationCode, ClientId, CsrfToken,
     PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, Scope, TokenUrl,
 };
 use regex::Regex;
@@ -13,6 +13,7 @@ use ybc::TileSize::Four;
 use yew::prelude::*;
 use yew::services::ConsoleService;
 use yew::web_sys;
+use async_std::task;
 
 type TokenResponse =
     oauth2::StandardTokenResponse<oauth2::EmptyExtraTokenFields, oauth2::basic::BasicTokenType>;
@@ -71,7 +72,12 @@ impl Component for Login {
         .as_str()
         {
             "/auth/callback" => {
-                let token = get_token(&login.oauth, window).unwrap();
+                let oauth = login.oauth.clone();
+                let get_token_future = async move {
+                  let token = get_token(&oauth, window).await.unwrap();
+                  token
+                };
+                let token = task::block_on(get_token_future);
                 let cookie_opts = wasm_cookies::CookieOptions {
                     path: Some("/"),
                     domain: None,
@@ -85,12 +91,13 @@ impl Component for Login {
                         Ok(json) => json,
                         Err(err) => {
                             ConsoleService::error(format!("An error occured: {:#?}", err).as_str());
-                            panic!(format!("An error occured: {:#?}", err).as_str())
+                            panic!("An error occured: {:#?}", err)
                         }
                     }
                     .as_str(),
                     &cookie_opts,
                 );
+                ConsoleService::info(format!("Token: {:#?}", token).as_str());
             }
             _ => {}
         };
@@ -121,7 +128,7 @@ impl Component for Login {
                         Ok(json) => json,
                         Err(err) => {
                             ConsoleService::error(format!("An error occured: {:#?}", err).as_str());
-                            panic!(format!("An error occured: {:#?}", err).as_str())
+                            panic!("An error occured: {:#?}", err)
                         }
                     }
                     .as_str(),
@@ -133,7 +140,7 @@ impl Component for Login {
                         Ok(json) => json,
                         Err(err) => {
                             ConsoleService::error(format!("An error occured: {:#?}", err).as_str());
-                            panic!(format!("An error occured: {:#?}", err).as_str())
+                            panic!("An error occured: {:#?}", err)
                         }
                     }
                     .as_str(),
@@ -194,6 +201,7 @@ fn get_oauth_client(oauth_config: &OauthConfig) -> Result<BasicClient, anyhow::E
         AuthUrl::new(oauth_config.auth_url.clone())?,
         Some(TokenUrl::new(oauth_config.token_url.clone())?),
     )
+    .set_auth_type(AuthType::RequestBody)
     .set_redirect_uri(RedirectUrl::new(oauth_config.redirect_url.clone())?);
     Ok(client)
 }
@@ -208,15 +216,15 @@ fn get_redirect_url(
     let (auth_url, csrf_token) = get_oauth_client(oauth_config)?
         .authorize_url(CsrfToken::new_random)
         // Set the desired scopes.
-        .add_scope(Scope::new("read_user".to_string()))
         .add_scope(Scope::new("openid".to_string()))
+        .add_scope(Scope::new("profile".to_string()))
         // Set the PKCE code challenge.
         .set_pkce_challenge(pkce_challenge)
         .url();
     Ok((auth_url, csrf_token, pkce_verifier))
 }
 
-fn get_token(
+async fn get_token(
     oauth_config: &OauthConfig,
     window: web_sys::Window,
 ) -> Result<TokenResponse, anyhow::Error> {
@@ -227,7 +235,7 @@ fn get_token(
             return Err(anyhow::Error::msg(format!("Error: {:#?}", err)));
         }
     };
-    let code = match Regex::new(r"code=([a-z,0-9]\w+)")
+    let code = match Regex::new(r"code=([\w,\.,\-]+)")
         .unwrap()
         .captures(href.as_str())
     {
@@ -238,7 +246,7 @@ fn get_token(
         }
     }[1]
     .to_string();
-    let state = match Regex::new(r"state=([a-z,A-Z,0-9]\w+)")
+    let state = match Regex::new(r"&state=([\w,\.,\-]+)")
         .unwrap()
         .captures(href.as_str())
     {
@@ -249,7 +257,7 @@ fn get_token(
         }
     }[1]
     .to_string();
-    ConsoleService::info(format!("Code: {0}, State: {1}", state, code).as_str());
+    ConsoleService::info(format!("Code: {0}, State: {1}", code, state).as_str());
 
     let pkce_verifier_json = match match wasm_cookies::get("pkce_verifier") {
         Some(pkce_verifier_result) => pkce_verifier_result,
@@ -274,11 +282,8 @@ fn get_token(
         }
     };
     let token_result = get_oauth_client(oauth_config)?
-        .exchange_code(AuthorizationCode::new(
-            "some authorization code".to_string(),
-        ))
-        // Set the PKCE code verifier.
+        .exchange_code(AuthorizationCode::new(code))
         .set_pkce_verifier(pkce_verifier)
-        .request(http_client)?;
+        .request_async(async_http_client).await?;
     Ok(token_result)
 }
