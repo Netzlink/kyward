@@ -3,9 +3,11 @@ use super::super::super::diesel::prelude::*;
 use super::super::super::schema::doors::dsl::*;
 use super::super::models::door::Door;
 use rocket::serde::json::Json;
+use super::super::super::auth::ApiToken;
 
 #[get("/door")]
-pub async fn list(db: DbConn) -> Json<Vec<Door>> {
+pub async fn list(db: DbConn, token: ApiToken) -> Json<Vec<Door>> {
+    println!("{:#?}", token);
     Json(
         db.run(|c| doors.load::<Door>(c).expect("Error loading doors"))
             .await,

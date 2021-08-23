@@ -26,6 +26,8 @@ rust-embed="6.0.0"
 rocket_prometheus = "0.8.1"
 clap = "2.33.3"
 reqwest = "0.11.4"
+anyhow = "1.0.13"
+regex = "1.5.4"
 
 [dependencies.rocket]
 version = "0.5.0-rc.1"

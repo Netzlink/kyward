@@ -14,6 +14,7 @@ mod cors;
 mod database;
 mod schema;
 mod v1alpha1;
+mod auth;
 
 use v1alpha1::handler::{company, door, group, person, token, ui, version};
 
