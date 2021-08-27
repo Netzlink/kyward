@@ -26,6 +26,7 @@ fn kyward() -> _ {
     rocket::build()
         .attach(database::DbConn::fairing())
         .attach(cors::CORS)
+        .manage(auth::get_azure_auth(""))
         .mount("/", routes![ui::index, ui::files, version::version])
         .mount(
             "/api/v1alpha1",

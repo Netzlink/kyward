@@ -1,6 +1,7 @@
 use anyhow::Error;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest, Request};
+use azure_jwt::*;
 
 static AUTHENTICATION_HEADER: &'static str = "Authorization";
 static BEARER_PATTERN: &'static str =
@@ -40,7 +41,31 @@ impl<'r> FromRequest<'r> for ApiToken {
             }
         }[1];
         let api_token = ApiToken(token.to_string());
-        // check and caching ?
         return request::Outcome::Success(api_token);
+    }
+}
+
+impl ApiToken {
+    pub fn _validate(&self, auth_conf: &OauthConf) -> Result<AzureJwtClaims, AuthenticationError> {
+        let mut auth = match AzureAuth::new(auth_conf.app_id.clone()) {
+            Ok(data) => data,
+            Err(err) => {
+                return Err(AuthenticationError(anyhow::Error::new(err)));
+            }
+        };
+        match auth.validate_token(self.0.as_str()) {
+            Ok(token) => Ok(token.claims),
+            Err(err) => Err(AuthenticationError(anyhow::Error::new(err))),
+        }
+    }
+}
+
+pub struct OauthConf {
+    pub app_id: String
+}
+
+pub fn get_azure_auth(id: &'static str) -> OauthConf {
+    OauthConf{
+        app_id: id.to_string(),
     }
 }

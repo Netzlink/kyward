@@ -48,7 +48,7 @@ impl Component for Login {
             link: link,
             props: props,
             oauth: OauthConfig {
-                client_id: ""
+                client_id: "0d73fe1d-c27c-410b-bf83-1e12d82627fe"
                     .to_string(),
                 auth_url: "https://login.microsoftonline.com/73c5b76c-7cf4-49f4-bb66-d044d83a2dc5/oauth2/v2.0/authorize".to_string(),
                 token_url: "https://login.microsoftonline.com/73c5b76c-7cf4-49f4-bb66-d044d83a2dc5/oauth2/v2.0/token".to_string(),

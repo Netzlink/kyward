@@ -4,13 +4,12 @@ use super::super::super::schema::doors::dsl::*;
 use super::super::models::door::Door;
 use rocket::serde::json::Json;
 use super::super::super::auth::ApiToken;
-
+use rocket::response::status::Unauthorized;
 #[get("/door")]
-pub async fn list(db: DbConn, token: ApiToken) -> Json<Vec<Door>> {
+pub async fn list(db: DbConn, token: ApiToken) -> Result<Json<Vec<Door>>, Unauthorized<String>> {
     println!("{:#?}", token);
-    Json(
-        db.run(|c| doors.load::<Door>(c).expect("Error loading doors"))
-            .await,
+    Ok(
+        Json(db.run(|c| doors.load::<Door>(c).expect("Error loading doors")).await)
     )
 }
 
