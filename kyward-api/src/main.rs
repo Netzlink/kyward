@@ -26,7 +26,7 @@ fn kyward() -> _ {
     rocket::build()
         .attach(database::DbConn::fairing())
         .attach(cors::CORS)
-        .manage(auth::get_azure_auth(""))
+        .manage(auth::get_oauth_public_key("https://login.microsoftonline.com/common/discovery/keys"))
         .mount("/", routes![ui::index, ui::files, version::version])
         .mount(
             "/api/v1alpha1",
