@@ -78,7 +78,7 @@ impl Component for Login {
                     domain: None,
                     expires: Some((Local::now() + Duration::minutes(30)).to_string()),
                     same_site: wasm_cookies::SameSite::Strict,
-                    secure: false,
+                    secure: true,
                 };
                 let get_token_future = async move {
                     let token = get_token(&oauth, window.clone()).await.unwrap();
@@ -127,7 +127,7 @@ impl Component for Login {
                     domain: None,
                     expires: Some((Local::now() + Duration::minutes(1)).to_string()),
                     same_site: wasm_cookies::SameSite::Strict,
-                    secure: false,
+                    secure: true,
                 };
                 wasm_cookies::set(
                     "csrf_token",
