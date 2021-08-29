@@ -1,4 +1,5 @@
 # Kyward
+[![Docker Image CI](https://github.com/Netzlink/kyward.rs/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/Netzlink/kyward.rs/actions/workflows/docker-image.yml)  
 A simple token management tool written in almost completly rust.
 
 ## Screenshot
