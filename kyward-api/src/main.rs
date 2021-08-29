@@ -10,11 +10,11 @@ extern crate rust_embed;
 #[macro_use]
 extern crate clap;
 
+mod auth;
 mod cors;
 mod database;
 mod schema;
 mod v1alpha1;
-mod auth;
 
 use v1alpha1::handler::{company, door, group, person, token, ui, version};
 
@@ -26,7 +26,9 @@ fn kyward() -> _ {
     rocket::build()
         .attach(database::DbConn::fairing())
         .attach(cors::CORS)
-        .manage(auth::get_oauth_public_key("https://login.microsoftonline.com/common/discovery/keys"))
+        .manage(auth::get_oauth_public_key(
+            "https://login.microsoftonline.com/common/discovery/keys",
+        ))
         .mount("/", routes![ui::index, ui::files, version::version])
         .mount(
             "/api/v1alpha1",

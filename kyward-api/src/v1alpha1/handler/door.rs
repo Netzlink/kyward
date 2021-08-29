@@ -1,16 +1,17 @@
+use super::super::super::auth::User;
 use super::super::super::database::DbConn;
 use super::super::super::diesel::prelude::*;
 use super::super::super::schema::doors::dsl::*;
 use super::super::models::door::Door;
-use rocket::serde::json::Json;
-use super::super::super::auth::User;
 use rocket::response::status::Unauthorized;
+use rocket::serde::json::Json;
 #[get("/door")]
 pub async fn list(db: DbConn, user: User) -> Result<Json<Vec<Door>>, Unauthorized<String>> {
     println!("{:#?}", user);
-    Ok(
-        Json(db.run(|c| doors.load::<Door>(c).expect("Error loading doors")).await)
-    )
+    Ok(Json(
+        db.run(|c| doors.load::<Door>(c).expect("Error loading doors"))
+            .await,
+    ))
 }
 
 #[get("/door/<identifier>")]

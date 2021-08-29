@@ -44,6 +44,6 @@ impl Component for Logout {
     }
 
     fn view(&self) -> Html {
-        html!{}
+        html! {}
     }
 }
