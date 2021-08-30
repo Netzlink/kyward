@@ -5,18 +5,18 @@ use rocket::http::Status;
 use rocket::request::{self, FromRequest, Request};
 use rocket::serde::Deserialize;
 
-// Auth header key
-static AUTHENTICATION_HEADER: &'static str = "Authorization";
-// REGEX for an JWT Auth header
-static BEARER_PATTERN: &'static str =
-    r"Bearer ([a-zA-Z0-9_=]+\.[a-zA-Z0-9_=]+\.[a-zA-Z0-9_\-\+/=]*)";
+/// Auth header key
+const AUTHENTICATION_HEADER: &'static str = "Authorization";
+/// REGEX for an JWT Auth header
+const BEARER_PATTERN: &'static str =
+    r"Bearer ([a-zA-Z0-9_=]+\.[a-zA-Z0-9_=]+\.[a-zA-Z0-9_\-\+/=]+)";
 
-// Struct representing an ApiToken
+/// Struct representing an ApiToken
 #[derive(Debug, Clone, PartialEq)]
 pub struct ApiToken(String);
 
 impl ApiToken {
-    // Validate a ApiToken with the jwtk certificates
+    //! Validate a ApiToken with the jwtk certificates
     pub fn validate(&self, validation_keys: &AzurePublicKeys) -> Result<User, AuthenticationError> {
         let kid = match match jwtk::decode_without_verify::<User>(self.0.as_str()) {
             Ok(token) => token,
@@ -37,7 +37,7 @@ impl ApiToken {
             .clone()
             .keys
             .into_iter()
-            .filter(|key| key.kid == kid)
+            .filter(|key| key.kid == kid) 
             .last()
         {
             Some(key) => key,
@@ -49,7 +49,7 @@ impl ApiToken {
         };
         // TODO: Fix RSA Public Key
         let pem = format!(
-            "-----BEGIN RSA PUBLIC KEY-----\n{0}\n-----END RSA PUBLIC KEY-----",
+            "-----BEGIN RSA PUBLIC KEY-----\n{0}\n-----END RSA PUBLIC KEY-----\n",
             key.x5c.last().unwrap()
         );
         println!("{0}", pem);
@@ -69,11 +69,11 @@ impl ApiToken {
     }
 }
 
-// Struct representing an error in auth
+/// Struct representing an error in auth
 #[derive(Debug)]
 pub struct AuthenticationError(Error);
 
-// Get ApiToken from a Request
+/// Get ApiToken from a Request
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for ApiToken {
     type Error = AuthenticationError;
@@ -105,7 +105,7 @@ impl<'r> FromRequest<'r> for ApiToken {
     }
 }
 
-// Microsoft Azure JWT Claims representing user-data
+/// Microsoft Azure JWT Claims representing user-data
 #[derive(Deserialize, Clone, PartialEq, Debug)]
 pub struct User {
     name: String,
@@ -118,7 +118,7 @@ pub struct User {
     tenant_region_scope: String,
 }
 
-// Returns User from a Request
+/// Returns User from a Request
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for User {
     type Error = AuthenticationError;
@@ -153,7 +153,7 @@ impl<'r> FromRequest<'r> for User {
     }
 }
 
-// JSON Object of a JWTK
+/// JSON Object of a JWTK
 #[derive(Deserialize, PartialEq, Clone, Debug)]
 pub struct AzurePublicKey {
     kty: String,
@@ -164,7 +164,7 @@ pub struct AzurePublicKey {
     x5c: Vec<String>,
 }
 
-// Wrapper for JWTK JSON Object
+/// Wrapper for JWTK JSON Object
 #[derive(Deserialize, PartialEq, Clone, Debug)]
 pub struct AzurePublicKeys {
     keys: Vec<AzurePublicKey>,
