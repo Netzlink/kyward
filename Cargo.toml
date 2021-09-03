@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "kyward-ui",
+    "kyward-api"
+]

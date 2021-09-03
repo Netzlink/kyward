@@ -17,8 +17,10 @@ dev.api.build: kyward-api/Cargo.toml dev.ui.build
 	cd kyward-api && \
 	cargo build
 dev.db.migrate:
+	cd kyward-api && \
 	diesel migration run
 dev.db.remigrate:
+	cd kyward-api && \
 	diesel migration redo
 dev.ui.run:
 	cd kyward-ui && \

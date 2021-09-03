@@ -4,3 +4,4 @@ dev.sqlite*
 /*/dist
 target
 Cargo.lock
+.env
