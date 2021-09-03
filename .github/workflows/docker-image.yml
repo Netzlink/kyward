@@ -7,11 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     
@@ -19,6 +16,7 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
+        make dev.setup
         cargo install cargo-tarpaulin
         cargo tarpaulin --out Xml
         bash <(curl -s https://codecov.io/bash) -X gcov -t $CODECOV_TOKEN
