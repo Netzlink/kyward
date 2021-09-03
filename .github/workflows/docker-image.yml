@@ -18,6 +18,7 @@ jobs:
       run: |
         make dev.setup
         cargo install cargo-tarpaulin
+        make dev.ui.build
         cargo tarpaulin --out Xml
         bash <(curl -s https://codecov.io/bash) -X gcov -t $CODECOV_TOKEN
         
