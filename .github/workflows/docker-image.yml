@@ -14,5 +14,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag kyward:latest
+    
+    - name: Push to codecov.io
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        cargo install cargo-tarpaulin
+        cargo tarpaulin --out Xml
+        bash <(curl -s https://codecov.io/bash) -X gcov -t $CODECOV_TOKEN
+        
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      
+    - name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+          
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v2.7.0
+      with:
+        platforms: linux/amd64,linux/arm64
+        pull: true
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/kyward:latest
