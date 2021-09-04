@@ -1,0 +1,46 @@
+Requests:
+  [100000] http://localhost:8000/index-882a689db8ea9667_bg.wasm
+
+Summary:
+  Total:	934.7784 secs
+  Slowest:	19.4402 secs
+  Fastest:	0.0258 secs
+  Average:	4.5729 secs
+  Requests/sec:	106.9772
+  Total data:	264397700000 bytes
+  Size/request:	2643977 bytes
+
+Status code distribution:
+  [200]	100000 responses
+
+Latency distribution:
+  10% in 1.7204 secs
+  25% in 2.7801 secs
+  50% in 4.1336 secs
+  75% in 6.0947 secs
+  90% in 7.9757 secs
+  95% in 9.2666 secs
+  99% in 11.2471 secs
+Requests:
+  [100000] http://localhost:8000/api/v1alpha1/group/0/doors
+
+Summary:
+  Total:	67.3746 secs
+  Slowest:	1.0170 secs
+  Fastest:	0.0126 secs
+  Average:	0.3355 secs
+  Requests/sec:	1484.2391
+  Total data:	200000 bytes
+  Size/request:	2 bytes
+
+Status code distribution:
+  [200]	100000 responses
+
+Latency distribution:
+  10% in 0.2931 secs
+  25% in 0.3104 secs
+  50% in 0.3325 secs
+  75% in 0.3559 secs
+  90% in 0.3782 secs
+  95% in 0.3929 secs
+  99% in 0.4273 secs

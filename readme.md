@@ -1,13 +1,14 @@
 # Kyward
+[![codecov](https://codecov.io/gh/nk-designz/kyward.rs/branch/main/graph/badge.svg?token=L098QSJ1I7)](https://codecov.io/gh/nk-designz/kyward.rs)
 [![Docker Image CI](https://github.com/Netzlink/kyward.rs/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/Netzlink/kyward.rs/actions/workflows/docker-image.yml)  
 A simple token management tool written in almost completly rust.
 
 ## Screenshot
-_Doors Section_
+ _Doors Section_
 ![Doors Section Screenshot](assets/doors_section.png)
 
 ## Setup 
-_Dev_
+ _Dev_
 ```bash
 make run
 ```

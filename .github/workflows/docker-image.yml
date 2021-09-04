@@ -20,8 +20,10 @@ jobs:
         cargo install cargo-tarpaulin
         make dev.ui.build
         cargo tarpaulin --out Xml
-        bash <(curl -s https://codecov.io/bash) -X gcov -t $CODECOV_TOKEN
-        
+
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x codecov
+        ./codecov -t ${CODECOV_TOKEN}
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
       
@@ -37,7 +39,7 @@ jobs:
     - name: Build and push Docker images
       uses: docker/build-push-action@v2.7.0
       with:
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64,linux/arm64,linux/ppc64le
         pull: true
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/kyward:latest
