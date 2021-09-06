@@ -18,10 +18,11 @@ jobs:
       run: |
         rustup default nightly
         rustup target add wasm32-unknown-unknown
+
         cd ~/.cargo/bin/trunk && \
-        wget -qO- https://github.com/thedodd/trunk/releases/download/v0.13.1/trunk-x86_64-unknown-linux-gnu.tar.gz \
+        curl https://github.com/thedodd/trunk/releases/download/v0.13.1/trunk-x86_64-unknown-linux-gnu.tar.gz \
           | tar -xzf- && \
-        wget -qO- https://github.com/xd009642/tarpaulin/releases/download/0.18.2/cargo-tarpaulin-0.18.2-travis.tar.gz \
+        curl https://github.com/xd009642/tarpaulin/releases/download/0.18.2/cargo-tarpaulin-0.18.2-travis.tar.gz \
           | tar -xzf- 
         make dev.ui.build
         cargo tarpaulin --out Xml
