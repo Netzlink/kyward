@@ -4,11 +4,11 @@
 A simple token management tool written in almost completly rust.
 
 ## Screenshot
-_Doors Section_
+ _Doors Section_
 ![Doors Section Screenshot](assets/doors_section.png)
 
 ## Setup 
-_Dev_
+ _Dev_
 ```bash
 make run
 ```
