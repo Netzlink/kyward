@@ -26,7 +26,7 @@ COPY kyward-api /kyward-api
 WORKDIR /kyward-api
 RUN  diesel migration run
 
-FROM debian:bookworm-slim
+FROM debian:stable-slim
 COPY --from=api-builder \
     /kyward-api/target/release/kyward \
     kyward
