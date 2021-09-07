@@ -4,6 +4,8 @@ use jwtk;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest, Request};
 use rocket::serde::Deserialize;
+use openssl::x509::X509;
+use std::str;
 
 /// Auth header key
 const AUTHENTICATION_HEADER: &'static str = "Authorization";
@@ -49,16 +51,43 @@ impl ApiToken {
         };
         // TODO: Fix RSA Public Key
         let pem = format!(
-            "-----BEGIN RSA PUBLIC KEY-----\n{0}\n-----END RSA PUBLIC KEY-----\n",
+            "-----BEGIN CERTIFICATE-----\n{0}\n-----END CERTIFICATE-----\n",
             key.x5c.last().unwrap()
         );
-        println!("{0}", pem);
-        let pem_bin = pem.as_str().as_bytes();
-        let validation_key = jwtk::rsa::RsaPublicKey::from_pem(
-            pem_bin.as_ref(),
+        let rsa_public_key_pem = match match match match X509::from_pem(&pem.as_bytes()) {
+            Ok(certificate) => certificate,
+            Err(err) => {
+                return Err(AuthenticationError(anyhow::Error::msg(err)))
+            }
+        }
+        .public_key() {
+            Ok(public_key) => public_key,
+            Err(err) => {
+                return Err(AuthenticationError(anyhow::Error::msg(err)))
+            }
+        }
+        .rsa() {
+            Ok(rsa) => rsa,
+            Err(err) => {
+                return Err(AuthenticationError(anyhow::Error::msg(err)))
+            }            
+        }
+        .public_key_to_pem() {
+            Ok(pem) => pem,
+            Err(err) => {
+                return Err(AuthenticationError(anyhow::Error::msg(err)))
+            }
+        };
+        let validation_key = match jwtk::rsa::RsaPublicKey::from_pem(
+            rsa_public_key_pem.as_ref(),
             Some(jwtk::rsa::RsaAlgorithm::RS256),
-        )
-        .expect("Error: Wrong public key format");
+        ) {
+            Ok(val_key) => val_key,
+            Err(err) => {
+                return Err(AuthenticationError(anyhow::Error::msg(err)))
+            }
+        };
+        println!("{0}", str::from_utf8(rsa_public_key_pem.as_ref()).unwrap());
         match jwtk::verify::<User>(self.0.as_str(), &validation_key) {
             Ok(token) => {
                 let user: User = token.claims().extra.clone();

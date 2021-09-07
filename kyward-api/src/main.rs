@@ -27,7 +27,7 @@ fn kyward() -> _ {
         .attach(database::DbConn::fairing())
         .attach(cors::CORS)
         .manage(auth::get_oauth_public_key(
-            "https://login.microsoftonline.com/common/discovery/keys",
+            "https://login.windows.net/common/discovery/keys",
         ))
         .mount("/", routes![ui::index, ui::files, version::version])
         .mount(

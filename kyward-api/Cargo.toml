@@ -29,6 +29,7 @@ anyhow = "1.0.13"
 regex = "1.5.4"
 jwtk = "0.2.0"
 async-std = "1.9.0"
+openssl ="0.10.36"
 
 [dependencies.rocket]
 version = "0.5.0-rc.1"
