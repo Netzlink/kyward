@@ -1,4 +1,4 @@
-use super::super::super::auth::User;
+use super::super::super::auth::user::User;
 use super::super::super::database::DbConn;
 use super::super::super::diesel::prelude::*;
 use super::super::super::schema::doors::dsl::*;

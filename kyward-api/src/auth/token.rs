@@ -1,7 +1,9 @@
-use anyhow::Error;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest, Request};
 use azure_jwt::*;
+use super::user::User;
+use super::error::{AuthenticationError, NewAuthenticationError};
+
 /// Auth header key
 const AUTHENTICATION_HEADER: &'static str = "Authorization";
 /// REGEX for an JWT Auth header
@@ -22,15 +24,11 @@ impl ApiToken {
                 Ok(token) => {
                     Ok(User(token.claims))
                 }
-                Err(err) => Err(AuthenticationError(anyhow::Error::new(err))),
+                Err(err) => Err(NewAuthenticationError(anyhow::Error::new(err))),
             }
         }).await.expect("Task panicked")
     }
 }
-
-/// Struct representing an error in auth
-#[derive(Debug)]
-pub struct AuthenticationError(Error);
 
 /// Get ApiToken from a Request
 #[rocket::async_trait]
@@ -44,7 +42,7 @@ impl<'r> FromRequest<'r> for ApiToken {
             None => {
                 return request::Outcome::Failure((
                     Status::Unauthorized,
-                    AuthenticationError(anyhow::Error::msg("No Authentication-header found!")),
+                    NewAuthenticationError(anyhow::Error::msg("No Authentication-header found!")),
                 ))
             }
         };
@@ -56,41 +54,10 @@ impl<'r> FromRequest<'r> for ApiToken {
             None => {
                 return request::Outcome::Failure((
                     Status::Unauthorized,
-                    AuthenticationError(anyhow::Error::msg("Bad Authentication-header")),
+                    NewAuthenticationError(anyhow::Error::msg("Bad Authentication-header")),
                 ))
             }
         }[1];
         return request::Outcome::Success(ApiToken(token.to_string()));
-    }
-}
-
-/// Microsoft Azure JWT Claims representing user-data
-#[derive(Debug)]
-pub struct User(azure_jwt::AzureJwtClaims);
-
-/// Returns User from a Request
-#[rocket::async_trait]
-impl<'r> FromRequest<'r> for User {
-    type Error = AuthenticationError;
-
-    async fn from_request(req: &'r Request<'_>) -> request::Outcome<Self, Self::Error> {
-        let api_token: ApiToken = match ApiToken::from_request(req)
-            .await
-            .success_or("Error: No token")
-        {
-            Ok(token) => token,
-            Err(err) => {
-                return request::Outcome::Failure((
-                    Status::Unauthorized,
-                    AuthenticationError(anyhow::Error::msg(err)),
-                ))
-            }
-        };
-        let user = match api_token.validate().await {
-            Ok(user) => user,
-            Err(err) => return request::Outcome::Failure((Status::Unauthorized, err)),
-        };
-        let _ = api_token;
-        return request::Outcome::Success(user);
     }
 }
